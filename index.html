@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>PrettyScribe</title>
+
+      <link href="https://fonts.googleapis.com/css?family=Fjalla+One|PT+Serif|Source+Sans+Pro&display=swap"
+            rel="stylesheet">
+
+      <!-- Bootstrap CSS -->
+      <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+      <link rel="stylesheet" href="./css/prettyscribe.css">
+
+      <script src="https://kit.fontawesome.com/324895d590.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+      <nav class="navbar navbar-expand-md navbar-light bg-light justify-content-between">
+            <a href="index.html"><span class="navbar-brand">StrataGen</span></a>
+            <div>Generate Warhammer 40k stratagem cards.</div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar"
+                  aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                  <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                              <a class="nav-link" href="help.html">Help</a>
+                        </li>
+                        <li class="nav-item">
+                              <a class="nav-link" href="about.html">About</a>
+                        </li>
+                  </ul>
+            </div>
+      </nav>
+
+      <hr class="border-top border-primary">
+
+      <!-- Error dialog -->
+      <div class="modal fade" id="errorDialog">
+            <div class="modal-dialog">
+                  <div class="modal-content">
+                        <div class="modal-header">
+                              <h4 class="modal-title">Message</h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body" id="errorText">
+                        </div>
+                        <div class="modal-footer">
+                              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        </div>
+                  </div>
+            </div>
+      </div>
+
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+
+      <!-- <script type="module" src="./dist/prettyscribe.js"></script> -->
+
+</body>
+
+</html>
