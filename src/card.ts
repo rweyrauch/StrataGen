@@ -1,4 +1,3 @@
-import jsPDF from 'jspdf'
 
 export enum CardType {
     Stratagem = 'Stratagem',
@@ -94,12 +93,10 @@ export class Card {
     public _rule: string = "<Rule text>"
     public _value: string = "1";
 
-    constructor(width: number, height: number) {
+    public draw(ctx: CanvasRenderingContext2D, width: number, height: number) {
+
         this._width = width;
         this._height = height;
-    }
-
-    public draw(ctx: CanvasRenderingContext2D) {
 
         ctx.clearRect(0, 0, this._width, this._height);
 
@@ -209,10 +206,6 @@ export class Card {
         else if (this._type == CardType.TacticalObjective) {
             // TODO: Render object number
         }
-    }
-
-    public render(doc: jsPDF) {
-        // TODO: render the card to the given PDF document
     }
 
     public toString(): string {

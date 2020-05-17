@@ -1,15 +1,13 @@
-import jsPDF from 'jspdf'
 import { Card, CardType } from "./card";
 
 let myCard: Card | null = null;
-let myCardPdf: jsPDF | null = null;
 
 function updatePreview() {
     let canvas = document.getElementById('preview') as HTMLCanvasElement;
     if (canvas) {
         let ctx = canvas.getContext('2d');
         if (ctx && myCard) {
-            myCard.draw(ctx);
+            myCard.draw(ctx, canvas.width, canvas.height);
         }
     }
 }
@@ -89,10 +87,39 @@ function onCPChanged(event: Event) {
     }
 }
 
-function handleSubmit() {
-    if (myCardPdf && myCard) {
-        myCard.render(myCardPdf);
-        myCardPdf.save('stratagem.pdf');
+function mmToInches(mm: number): number {
+    return mm / 25.4; 
+}
+
+function handleCreate() {
+    if (myCard) {
+        const cardSizes = [[63, 88], [89, 146], [44.45, 63.5]];
+        const cardSizeSelect = document.getElementById('cardsize') as HTMLSelectElement;
+        if (cardSizeSelect) {
+            const size = cardSizes[cardSizeSelect.selectedIndex];
+            const dpi = 300;
+            let canvas = document.createElement('canvas') as HTMLCanvasElement;
+            canvas.width = mmToInches(size[0]) * dpi;
+            canvas.height = mmToInches(size[1]) * dpi;
+
+            console.log("Saved cavas size: " + canvas.width + ", " + canvas.height);
+
+            let ctx = canvas.getContext('2d');
+            if (ctx) {
+                myCard.draw(ctx, canvas.width, canvas.height);
+
+                let link = document.createElement('a');
+                link.download = 'stratagem.png';
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            }
+            else {
+                console.log("Failed to create big canvas.");
+            }
+        }
+        else {
+            console.log("Cannot find cardsize selection.");
+        }
     }
 }
 
@@ -118,22 +145,16 @@ function plumbCallbacks() {
     if (cardCPInput) cardCPInput.addEventListener('input', onCPChanged);
 
     const createCard = document.getElementById('createcard');
-    if (createCard) createCard.addEventListener('submit', handleSubmit);
+    if (createCard) createCard.addEventListener('click', handleCreate);
 }
 
 let canvas = document.getElementById('preview') as HTMLCanvasElement;
 if (canvas) {
     let ctx = canvas.getContext('2d');
     if (ctx) {
-        myCard = new Card(canvas.width, canvas.height);
+        myCard = new Card();
     }
 }
-
-myCardPdf = new jsPDF({
-    orientation: 'p',
-    unit: 'mm',
-    format: [630, 880]
-});
 
 plumbCallbacks();
 
