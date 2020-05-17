@@ -3,93 +3,100 @@
 
 <head>
       <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <meta name="description" content="">
       <meta name="author" content="">
 
-      <title>StrataGen</title>
-
-      <link href="https://fonts.googleapis.com/css?family=Fjalla+One|PT+Serif|Source+Sans+Pro&display=swap"
-            rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=PT+Serif&family=Teko:wght@600&display=swap" rel="stylesheet">
 
       <!-- Bootstrap CSS -->
-      <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
-            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">      
+
       <link rel="stylesheet" href="./css/stratagen.css">
+
+      <title>StrataGen</title>
 
       <script src="https://kit.fontawesome.com/324895d590.js" crossorigin="anonymous"></script>
 </head>
 
 <body class="bg-light">
 
-      <div class="container">
-            <div class="py-5 text-center">
-                  <h2>StrataGen</h2>
-                  <p class="lead">Generate Warhammer 40k data cards, including strategems, psyhic powers and tactical objects.</p>
-            </div>   
-            
-            <div class="row">
+      <div class=jumbotron jumbotron-fluid">
+            <div class="container">
+                  <h1 class="display-4">StrataGen</h1>
+                  <p class="lead">Generate Warhammer 40k data cards.</p> 
+                  <hr class="my-4">
+                  <p>Create and export stratagem, psychic power and tactical objective data cards for Warhammer 40k.</p>     
+            </div>
+      </div>
 
+      <div class="container">      
+            <div class="row">
                   <div class="col-md-6 order-md-1">
                         <h4 class="mb-3">Options</h4>
                         <form action="">
-                              <div class="row">
+                              <div class="form-group">
                                     <label for="cardtype">Card Type</label>
-                                    <select class="cardinput" name="" id="cardtype">
-                                          <option value="">Choose...</option>
+                                    <select class="form-control" name="" id="cardtype">
                                           <option value="Statagem">Stratagem</option>
                                           <option value="Psychic Power">Psychic Power</option>
                                           <option value="Tactical Objective">Tactical Objective</option>
-                                    </select> 
+                                    </select>
+                              </div>
+
+                              <div class="form-group">
                                     <label for="cardheader">Header</label>
-                                    <input class="cardinput" type="text" id="cardheader" placeholder="" value="Stratagem">      
+                                    <input class="form-control" type="text" id="cardheader" placeholder=""
+                                          value="Stratagem">
                               </div>
 
-                              <div class="row">
+                              <div class="form-group">
                                     <label for="cardtitle">Title</label>
-                                    <input class="cardinput" type="text" id="cardtitle" placeholder="Title" value="" required>                                          
+                                    <input class="form-control" type="text" id="cardtitle" placeholder="Title" value=""
+                                          required>
                               </div>
- 
-                              <div class="row">
+
+                              <div class="form-group">
                                     <label for="cardfluff">Fluff</label>
-                                    <textarea class="cardinput" type="text" id="cardfluff" cols="60" rows="5" placeholder="Fluff text"></textarea>      
+                                    <textarea class="form-control" type="text" id="cardfluff" cols="40" rows="5"
+                                          placeholder="Fluff text"></textarea>
                               </div>
 
-                              <div class="row">
+                              <div class="form-group">
                                     <label for="cardrule">Rule</label>
-                                    <textarea class="cardinput" name="" id="cardrule" cols="60" rows="5" placeholder="Rule text" required></textarea>      
+                                    <textarea class="form-control" name="" id="cardrule" cols="40" rows="5"
+                                          placeholder="Rule text" required></textarea>
                               </div>
 
-                              <div class="row">
+                              <div class="form-group">
                                     <label for="commandpoints">Command Points</label>
-                                    <input class="cardinput" type="number" id="commandpoints" min="1" max="3" value="1" required>      
+                                    <input class="form-control" type="number" id="commandpoints" min="1" max="3" value="1"
+                                          required>
                               </div>
 
-                              <div class="row">
+                              <div class="form-group">
                                     <label for="cardstyle">Style</label>
-                                    <select class="cardinput" name="" id="cardstyle">
-                                          <option value="">Choose...</option>
+                                    <select class="form-control" name="" id="cardstyle">
                                           <option value="">Clean</option>
                                           <option value="">Chaos</option>
                                     </select>
-      
+
                                     <label for="cardsize">Size</label>
-                                    <select class="cardinput" name="" id="cardsize">
-                                          <option value="">Choose...</option>
+                                    <select class="form-control" name="" id="cardsize">
                                           <option value="">Standard (63 x 88mm)</option>
                                           <option value="">Large (89 x 146mm)</option>
                                           <option value="">Small (44.45 x 63.5mm)</option>
-                                    </select>      
+                                    </select>
                               </div>
 
-                              <button class="btn btn-primary btn-lg btn-block" id="createcard" type="submit">Create card</button>
+                              <button class="btn btn-primary" id="createcard" type="submit">Create</button>
                         </form>
                   </div>
 
                   <div class="col-md-6 order-md-2 mb-4">
                         <h4 class="d-flex justify-content-between align-items-center mb-3">
                               <span class="text-muted">Preview</span>
-                        </h4>                  
+                        </h4>
                         <canvas id="preview" width="400" height="560">
 
                         </canvas>
@@ -97,19 +104,17 @@
             </div>
 
             <footer class="my-5 pt-5 text-muted text-center text-small">
+                  <p class="mb-1">&copy; 2020 Rick Weyrauch</p>
                   <ul class="list-inline">
-                    <li class="list-inline-item"><a href="about.html">About</a></li>
-                    <li class="list-inline-item"><a href="help.html">Help</a></li>
+                        <li class="list-inline-item"><a href="about.html">About</a></li>
+                        <li class="list-inline-item"><a href="help.html">Help</a></li>
                   </ul>
-            </footer>          
+            </footer>
       </div>
 
-      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-            crossorigin="anonymous"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-            crossorigin="anonymous"></script>
+      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
       <script type="module" src="./dist/stratagen.js"></script>
 

@@ -1,3 +1,5 @@
+import jsPDF from 'jspdf'
+
 export enum CardType {
     Stratagem = 'Stratagem',
     PsychicPower = 'Psychic Power',
@@ -56,7 +58,7 @@ export function RenderParagraph(ctx: CanvasRenderingContext2D, text: string, x: 
 
         for (let l of lines) {
             let measure = ctx.measureText(l);
-            const tw = measure.width; 
+            const tw = measure.width;
             if (how == Justification.Center) {
                 ctx.fillText(l, x + Math.max((w - tw) / 2, 0), curY, w);
             }
@@ -77,13 +79,20 @@ export class Card {
     private _width: number = 0;
     private _height: number = 0;
 
+    private static readonly headerFont = 24 + 'px ' + 'Teko';
+    private static readonly titleFont = 28 + 'px ' + 'Teko';
+    private static readonly fluffFont = 'italic ' + 14 + 'px ' + 'serif';
+    private static readonly ruleFont = 14 + 'px ' + 'serif';
+    private static readonly footFont = 18 + 'px ' + 'Teko';
+    private static readonly valueFont = 24 + 'px ' + 'Teko';
+
     public _type: CardType = CardType.Stratagem;
 
     public _heading: string = "Stratagem";
     public _title: string = "<Title>";
     public _fluff: string = "<Fluff text>";
     public _rule: string = "<Rule text>"
-    public _value: string = "0";
+    public _value: string = "1";
 
     constructor(width: number, height: number) {
         this._width = width;
@@ -96,14 +105,14 @@ export class Card {
 
         ctx.lineJoin = 'round';
         ctx.strokeStyle = 'silver';
-        this.roundRect(ctx, 1, 1, this._width-2, this._height-2, 20, false, true);
-    
+        this.roundRect(ctx, 1, 1, this._width - 2, this._height - 2, 20, false, true);
+
         const borderX = this._width * 0.05;
         const borderY = borderX;
         const borderWidth = this._width - 2 * borderX;
-        const borderHeight =  this._height - 2 * borderY;
+        const borderHeight = this._height - 2 * borderY;
         const borderLineWidth = borderX * 0.3;
-    
+
         const textRegionHeight = 40;
 
         ctx.save();
@@ -111,11 +120,11 @@ export class Card {
         ctx.lineWidth = borderLineWidth;
         this.drawBorder(ctx, borderX, borderY, borderWidth, borderHeight, textRegionHeight);
         ctx.restore();
-        
+
         const cardHeader = this._heading.toLocaleUpperCase();
 
         ctx.save();
-        ctx.font = 'bold ' + 20 + 'px ' + 'serif';
+        ctx.font = Card.headerFont;
         ctx.textBaseline = 'top';
         ctx.fillStyle = 'black';
         RenderText(ctx, cardHeader, borderX, borderY, borderWidth, textRegionHeight, Justification.Center);
@@ -133,12 +142,12 @@ export class Card {
         const cardTitle = this._title.toLocaleUpperCase();
 
         ctx.save();
-        ctx.font = 'bold ' + 24 + 'px ' + 'serif';
+        ctx.font = Card.titleFont;
         ctx.textBaseline = 'top';
         ctx.fillStyle = 'black';
         RenderText(ctx, cardTitle, marginXLeft, curY, textWidth, textRegionHeight, Justification.Center);
         ctx.restore();
-            
+
         curY += textRegionHeight;
 
         ctx.moveTo(marginXLeft, curY);
@@ -149,7 +158,7 @@ export class Card {
 
         if (this._fluff.length > 0) {
             ctx.save();
-            ctx.font = 'italic ' + 12 + 'px ' + ' serif';
+            ctx.font = Card.fluffFont;
             ctx.fillStyle = 'black';
             curY = RenderParagraph(ctx, this._fluff, marginXLeft, curY, textWidth, Justification.Center);
             ctx.restore();
@@ -163,13 +172,36 @@ export class Card {
         curY += textRegionHeight / 2;
 
         ctx.save();
-        ctx.font = 12 + 'px ' + ' serif';
+        ctx.font = Card.ruleFont;
         ctx.fillStyle = 'black';
         curY = RenderParagraph(ctx, this._rule, marginXLeft, curY, textWidth, Justification.Center);
         ctx.restore();
 
+        curY = this._height - borderY * 1.5 - textRegionHeight;
+
         if (this._type == CardType.Stratagem) {
+            const cpBoxSize = textRegionHeight;
             // TODO: Render command points
+            this.roundRect(ctx, marginXLeft * 2 + cpBoxSize, curY, textWidth - 2 * marginXLeft - cpBoxSize, textRegionHeight - 6, 8, false, true);
+
+            ctx.save();
+            ctx.font = Card.footFont;
+            ctx.textBaseline = 'top';
+            ctx.fillStyle = 'black';
+            RenderText(ctx, 'COMMAND POINTS', marginXLeft * 2 + cpBoxSize, curY, textWidth - 2 * marginXLeft - cpBoxSize, textRegionHeight - 6, Justification.Center);
+            ctx.restore();
+
+            ctx.save();
+            ctx.fillStyle = '#ba2222';
+            this.bevelRect(ctx, marginXLeft * 2, curY - 3, cpBoxSize, cpBoxSize, 5, true, true);
+            ctx.restore();
+
+            ctx.save();
+            ctx.font = Card.valueFont;
+            ctx.textBaseline = 'top';
+            ctx.fillStyle = '#f5f2f2';
+            RenderText(ctx, this._value, marginXLeft * 2, curY - 3, cpBoxSize, cpBoxSize, Justification.Center);
+            ctx.restore();
         }
         else if (this._type == CardType.PsychicPower) {
             // TODO: Render warp charge
@@ -177,6 +209,10 @@ export class Card {
         else if (this._type == CardType.TacticalObjective) {
             // TODO: Render object number
         }
+    }
+
+    public render(doc: jsPDF) {
+        // TODO: render the card to the given PDF document
     }
 
     public toString(): string {
@@ -202,8 +238,8 @@ export class Card {
             ctx.stroke();
         }
     }
-    
-    private drawBorder(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, bevel: number) {
+
+    private bevelRect(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, bevel: number, fill: boolean, stroke: boolean) {
         ctx.beginPath();
         ctx.moveTo(x, y + bevel);
         ctx.lineTo(x, y + height - bevel);
@@ -214,9 +250,19 @@ export class Card {
         ctx.lineTo(x + width - bevel, y);
         ctx.lineTo(x + bevel, y);
         ctx.closePath();
+        if (fill) {
+            ctx.fill();
+        }
+        if (stroke) {
+            ctx.stroke();
+        }
+    }
+
+    private drawBorder(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, bevel: number) {
+        this.bevelRect(ctx, x, y, width, height, bevel, false, true);
         ctx.moveTo(x, y + bevel);
         ctx.lineTo(x + width, y + bevel);
         ctx.stroke();
     }
-    
+
 }

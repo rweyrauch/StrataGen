@@ -1,14 +1,15 @@
 import jsPDF from 'jspdf'
 import { Card, CardType } from "./card";
 
-let myCard: Card|null = null;
+let myCard: Card | null = null;
+let myCardPdf: jsPDF | null = null;
 
 function updatePreview() {
     let canvas = document.getElementById('preview') as HTMLCanvasElement;
     if (canvas) {
         let ctx = canvas.getContext('2d');
         if (ctx && myCard) {
-             myCard.draw(ctx);
+            myCard.draw(ctx);
         }
     }
 }
@@ -17,6 +18,9 @@ function onCardTypeChanged(event: Event) {
     const selectElem = event.target as HTMLSelectElement;
     if (selectElem && myCard) {
         myCard._heading = selectElem.selectedOptions[0].text;
+
+        // TODO: update the text in the Header input to match.
+
         if (selectElem.selectedOptions[0].text == 'Stratagem') {
             myCard._type = CardType.Stratagem;
         }
@@ -26,6 +30,7 @@ function onCardTypeChanged(event: Event) {
         else if (selectElem.selectedOptions[0].text == 'Tactical Objective') {
             myCard._type = CardType.TacticalObjective;
         }
+    
         updatePreview();
     }
 }
@@ -76,13 +81,19 @@ function onFluffChanged(event: Event) {
     }
 }
 
+function onCPChanged(event: Event) {
+    const inputElem = event.target as HTMLInputElement;
+    if (inputElem && myCard) {
+        myCard._value = inputElem.value;
+        updatePreview();
+    }
+}
+
 function handleSubmit() {
-     var doc = new jsPDF({
-        orientation: 'p',
-        unit: 'mm',
-        format: [630, 880]
-    });    
-    doc.save('stratagem.pdf');
+    if (myCardPdf && myCard) {
+        myCard.render(myCardPdf);
+        myCardPdf.save('stratagem.pdf');
+    }
 }
 
 function plumbCallbacks() {
@@ -103,17 +114,28 @@ function plumbCallbacks() {
     const cardFluffInput = document.getElementById('cardfluff');
     if (cardFluffInput) cardFluffInput.addEventListener('input', onFluffChanged);
 
+    const cardCPInput = document.getElementById('commandpoints');
+    if (cardCPInput) cardCPInput.addEventListener('input', onCPChanged);
+
     const createCard = document.getElementById('createcard');
-    if (createCard) createCard.addEventListener('submit', handleSubmit);  
+    if (createCard) createCard.addEventListener('submit', handleSubmit);
 }
 
 let canvas = document.getElementById('preview') as HTMLCanvasElement;
 if (canvas) {
     let ctx = canvas.getContext('2d');
     if (ctx) {
-        myCard = new Card(canvas.width, canvas.height); 
+        myCard = new Card(canvas.width, canvas.height);
     }
 }
 
+myCardPdf = new jsPDF({
+    orientation: 'p',
+    unit: 'mm',
+    format: [630, 880]
+});
+
 plumbCallbacks();
+
+updatePreview();
 
