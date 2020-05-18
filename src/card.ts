@@ -75,15 +75,12 @@ export function RenderParagraph(ctx: CanvasRenderingContext2D, text: string, x: 
 
 export class Card {
 
-    private _width: number = 0;
-    private _height: number = 0;
+    private static readonly defaultWidthPx = 400;
+    private static readonly defaultHeightPx = 560;
 
-    private static readonly headerFont = 24 + 'px ' + 'Teko';
-    private static readonly titleFont = 28 + 'px ' + 'Teko';
-    private static readonly fluffFont = 'italic ' + 14 + 'px ' + 'serif';
-    private static readonly ruleFont = 14 + 'px ' + 'serif';
-    private static readonly footFont = 18 + 'px ' + 'Teko';
-    private static readonly valueFont = 24 + 'px ' + 'Teko';
+    private _width: number = Card.defaultWidthPx;
+    private _height: number = Card.defaultHeightPx;
+    private _scale: number = 1;
 
     public _type: CardType = CardType.Stratagem;
 
@@ -93,10 +90,33 @@ export class Card {
     public _rule: string = "<Rule text>"
     public _value: string = "1";
 
-    public draw(ctx: CanvasRenderingContext2D, width: number, height: number) {
+    private headerFont(): string {
+        return Math.round(24*this._scale).toString() + 'px ' + 'Teko';
+    }
+    private titleFont(): string {
+        return Math.round(28*this._scale).toString() + 'px ' + 'Teko';
+    }
+    private fluffFont(): string {
+        return 'italic ' + Math.round(14*this._scale).toString() + 'px ' + 'serif';
+    }
+    private ruleFont(): string {
+        return Math.round(14*this._scale).toString() + 'px ' + 'serif';
+    }
+    private footFont(): string {
+        return Math.round(18*this._scale).toString() + 'px ' + 'Teko';
+    }
+    private valueFont(): string {
+        return Math.round(24*this._scale).toString() + 'px ' + 'Teko';
+    }
 
-        this._width = width;
-        this._height = height;
+    public draw(canvas: HTMLCanvasElement) {
+
+        let ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        this._width = canvas.width;
+        this._height = canvas.height;
+        this._scale = Math.max(canvas.width/Card.defaultWidthPx, canvas.height/Card.defaultHeightPx);
 
         ctx.clearRect(0, 0, this._width, this._height);
 
@@ -108,9 +128,9 @@ export class Card {
         const borderY = borderX;
         const borderWidth = this._width - 2 * borderX;
         const borderHeight = this._height - 2 * borderY;
-        const borderLineWidth = borderX * 0.3;
+        const borderLineWidth = Math.ceil(borderX * 0.3);
 
-        const textRegionHeight = 40;
+        const textRegionHeight = this._height / 12;
 
         ctx.save();
         ctx.strokeStyle = 'grey';
@@ -121,7 +141,7 @@ export class Card {
         const cardHeader = this._heading.toLocaleUpperCase();
 
         ctx.save();
-        ctx.font = Card.headerFont;
+        ctx.font = this.headerFont();
         ctx.textBaseline = 'top';
         ctx.fillStyle = 'black';
         RenderText(ctx, cardHeader, borderX, borderY, borderWidth, textRegionHeight, Justification.Center);
@@ -139,7 +159,7 @@ export class Card {
         const cardTitle = this._title.toLocaleUpperCase();
 
         ctx.save();
-        ctx.font = Card.titleFont;
+        ctx.font = this.titleFont();
         ctx.textBaseline = 'top';
         ctx.fillStyle = 'black';
         RenderText(ctx, cardTitle, marginXLeft, curY, textWidth, textRegionHeight, Justification.Center);
@@ -155,7 +175,7 @@ export class Card {
 
         if (this._fluff.length > 0) {
             ctx.save();
-            ctx.font = Card.fluffFont;
+            ctx.font = this.fluffFont();
             ctx.fillStyle = 'black';
             curY = RenderParagraph(ctx, this._fluff, marginXLeft, curY, textWidth, Justification.Center);
             ctx.restore();
@@ -169,7 +189,7 @@ export class Card {
         curY += textRegionHeight / 2;
 
         ctx.save();
-        ctx.font = Card.ruleFont;
+        ctx.font = this.ruleFont();
         ctx.fillStyle = 'black';
         curY = RenderParagraph(ctx, this._rule, marginXLeft, curY, textWidth, Justification.Center);
         ctx.restore();
@@ -179,10 +199,11 @@ export class Card {
         if (this._type == CardType.Stratagem) {
             const cpBoxSize = textRegionHeight;
             // TODO: Render command points
+            ctx.lineWidth = Math.max(Math.ceil(this._scale), 1.0);
             this.roundRect(ctx, marginXLeft * 2 + cpBoxSize, curY, textWidth - 2 * marginXLeft - cpBoxSize, textRegionHeight - 6, 8, false, true);
 
             ctx.save();
-            ctx.font = Card.footFont;
+            ctx.font = this.footFont();
             ctx.textBaseline = 'top';
             ctx.fillStyle = 'black';
             RenderText(ctx, 'COMMAND POINTS', marginXLeft * 2 + cpBoxSize, curY, textWidth - 2 * marginXLeft - cpBoxSize, textRegionHeight - 6, Justification.Center);
@@ -190,11 +211,12 @@ export class Card {
 
             ctx.save();
             ctx.fillStyle = '#ba2222';
+            ctx.lineWidth = Math.max(Math.ceil(this._scale), 1.0);
             this.bevelRect(ctx, marginXLeft * 2, curY - 3, cpBoxSize, cpBoxSize, 5, true, true);
             ctx.restore();
 
             ctx.save();
-            ctx.font = Card.valueFont;
+            ctx.font = this.valueFont();
             ctx.textBaseline = 'top';
             ctx.fillStyle = '#f5f2f2';
             RenderText(ctx, this._value, marginXLeft * 2, curY - 3, cpBoxSize, cpBoxSize, Justification.Center);

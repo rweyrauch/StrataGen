@@ -74,18 +74,13 @@
                                           required>
                               </div>
 
-                              <div class="form-group">
+                              <!-- Hide this controls until it is implemented -->
+                              <div class="form-group" hidden>
                                     <label for="cardstyle">Style</label>
                                     <select class="form-control" name="" id="cardstyle">
                                           <option value="">Clean</option>
                                           <option value="">Chaos</option>
-                                    </select>
-
-                                    <label for="cardsize">Size</label>
-                                    <select class="form-control" name="" id="cardsize">
-                                          <option value="">Standard (63 x 88mm)</option>
-                                          <option value="">Large (89 x 146mm)</option>
-                                          <option value="">Small (44.45 x 63.5mm)</option>
+                                          <option value="">Orky</option>
                                     </select>
                               </div>
 
@@ -98,7 +93,7 @@
                               <span class="text-muted">Preview</span>
                         </h4>
                         <canvas id="preview" width="400" height="560">
-
+                              
                         </canvas>
                   </div>
             </div>

@@ -1,7 +1,7 @@
 # StrataGen
 StrataGen is a single-page web application that generates Warhammer 40k datacards.
 
-StrataGen currently (almost) supports the creation of Stratagem, Psychic Power and Tactical Objective cards.  The cards may be exported as PDF files.   The PDF files are suitable for printing or creating actual playing cards is so desired.
+StrataGen currently supports the creation of Stratagem cards.  The cards may be exported as png files.  The exported cards are sized as standard poker size, 63mm by 88mm and set to a resolution of 300 dpi.  The exported files are suitable for printing or creating actual playing cards is so desired.
 
 At the moment this application is still under developement and is not ready for actual use.
 

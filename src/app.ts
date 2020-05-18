@@ -4,11 +4,8 @@ let myCard: Card | null = null;
 
 function updatePreview() {
     let canvas = document.getElementById('preview') as HTMLCanvasElement;
-    if (canvas) {
-        let ctx = canvas.getContext('2d');
-        if (ctx && myCard) {
-            myCard.draw(ctx, canvas.width, canvas.height);
-        }
+    if (canvas && myCard) {
+        myCard.draw(canvas);      
     }
 }
 
@@ -37,13 +34,6 @@ function onCardStyleChanged(event: Event) {
     const selectElem = event.target as HTMLSelectElement;
     if (selectElem && myCard) {
         // TODO: implement style
-    }
-}
-
-function onCardSizeChanged(event: Event) {
-    const selectElem = event.target as HTMLSelectElement;
-    if (selectElem && myCard) {
-        // TODO: implement size
     }
 }
 
@@ -93,33 +83,22 @@ function mmToInches(mm: number): number {
 
 function handleCreate() {
     if (myCard) {
-        const cardSizes = [[63, 88], [89, 146], [44.45, 63.5]];
-        const cardSizeSelect = document.getElementById('cardsize') as HTMLSelectElement;
-        if (cardSizeSelect) {
-            const size = cardSizes[cardSizeSelect.selectedIndex];
-            const dpi = 300;
-            let canvas = document.createElement('canvas') as HTMLCanvasElement;
-            canvas.width = mmToInches(size[0]) * dpi;
-            canvas.height = mmToInches(size[1]) * dpi;
+        const cardSizeMm = [63, 88];
+        const dpi = 300;
+        let canvas = document.createElement('canvas') as HTMLCanvasElement;
+        canvas.style.width = 400 + 'px';
+        canvas.style.height = 560 + 'px';        
+        canvas.width = mmToInches(cardSizeMm[0]) * dpi;
+        canvas.height = mmToInches(cardSizeMm[1]) * dpi;
 
-            console.log("Saved cavas size: " + canvas.width + ", " + canvas.height);
+        console.log("Saved cavas size: " + canvas.width + ", " + canvas.height);
 
-            let ctx = canvas.getContext('2d');
-            if (ctx) {
-                myCard.draw(ctx, canvas.width, canvas.height);
+        myCard.draw(canvas);
 
-                let link = document.createElement('a');
-                link.download = 'stratagem.png';
-                link.href = canvas.toDataURL("image/png");
-                link.click();
-            }
-            else {
-                console.log("Failed to create big canvas.");
-            }
-        }
-        else {
-            console.log("Cannot find cardsize selection.");
-        }
+        let link = document.createElement('a');
+        link.download = 'stratagem.png';
+        link.href = canvas.toDataURL("image/png");
+        link.click();
     }
 }
 
@@ -129,8 +108,6 @@ function plumbCallbacks() {
     if (cardTypeSelect) cardTypeSelect.addEventListener('change', onCardTypeChanged);
     const cardStyleSelect = document.getElementById('cardstyle');
     if (cardStyleSelect) cardStyleSelect.addEventListener('change', onCardStyleChanged);
-    const cardSizeSelect = document.getElementById('cardsize');
-    if (cardSizeSelect) cardSizeSelect.addEventListener('change', onCardSizeChanged);
 
     const cardHeaderInput = document.getElementById('cardheader');
     if (cardHeaderInput) cardHeaderInput.addEventListener('input', onHeaderChanged);
