@@ -5,7 +5,7 @@ let myCard: Card | null = null;
 function updatePreview() {
     let canvas = document.getElementById('preview') as HTMLCanvasElement;
     if (canvas && myCard) {
-        myCard.draw(canvas);      
+        myCard.draw(canvas, 0);      
     }
 }
 
@@ -84,16 +84,24 @@ function mmToInches(mm: number): number {
 function handleCreate() {
     if (myCard) {
         const cardSizeMm = [63, 88];
-        const dpi = 300;
+
+        let dpi = 300;
+        let marginMm = 0;
+        const outputDPIInput = document.getElementById('outputdpi') as HTMLInputElement;
+        if (outputDPIInput) dpi = parseInt(outputDPIInput.value);
+        const outputMargin = document.getElementById('outputmargin') as HTMLInputElement;
+        if (outputMargin) marginMm = parseInt(outputMargin.value);
+        // Round margin up to that is always at least the requested size.
+        let marginPx = Math.ceil(mmToInches(marginMm) * dpi);
+        console.log("Margin Px" + marginPx);
+
         let canvas = document.createElement('canvas') as HTMLCanvasElement;
-        canvas.style.width = 400 + 'px';
-        canvas.style.height = 560 + 'px';        
-        canvas.width = mmToInches(cardSizeMm[0]) * dpi;
-        canvas.height = mmToInches(cardSizeMm[1]) * dpi;
+        canvas.width = Math.round(mmToInches(cardSizeMm[0]) * dpi) + 2 * marginPx;
+        canvas.height = Math.round(mmToInches(cardSizeMm[1]) * dpi) + 2 * marginPx;
 
         console.log("Saved cavas size: " + canvas.width + ", " + canvas.height);
 
-        myCard.draw(canvas);
+        myCard.draw(canvas, marginPx);
 
         let link = document.createElement('a');
         link.download = 'stratagem.png';

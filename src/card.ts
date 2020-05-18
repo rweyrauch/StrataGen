@@ -109,16 +109,19 @@ export class Card {
         return Math.round(24*this._scale).toString() + 'px ' + 'Teko';
     }
 
-    public draw(canvas: HTMLCanvasElement) {
+    public draw(canvas: HTMLCanvasElement, marginPx: number) {
 
         let ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        this._width = canvas.width;
-        this._height = canvas.height;
-        this._scale = Math.max(canvas.width/Card.defaultWidthPx, canvas.height/Card.defaultHeightPx);
+        this._width = canvas.width - 2 * marginPx;
+        this._height = canvas.height - 2 * marginPx;
+        this._scale = Math.max(this._width/Card.defaultWidthPx, this._height/Card.defaultHeightPx);
 
-        ctx.clearRect(0, 0, this._width, this._height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Apply margin - move the origin to the margin.
+        ctx.translate(marginPx, marginPx);
 
         ctx.lineJoin = 'round';
         ctx.strokeStyle = 'silver';

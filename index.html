@@ -21,19 +21,19 @@
 
 <body class="bg-light">
 
-      <div class=jumbotron jumbotron-fluid">
+      <div">
             <div class="container">
-                  <h1 class="display-4">StrataGen</h1>
+                  <h1>StrataGen</h1>
                   <p class="lead">Generate Warhammer 40k data cards.</p> 
-                  <hr class="my-4">
                   <p>Create and export stratagem, psychic power and tactical objective data cards for Warhammer 40k.</p>     
+                  <hr class="my-4">
             </div>
       </div>
 
       <div class="container">      
             <div class="row">
                   <div class="col-md-6 order-md-1">
-                        <h4 class="mb-3">Options</h4>
+                        <h4 class="mb-3">Card Details</h4>
                         <form action="">
                               <div class="form-group">
                                     <label for="cardtype">Card Type</label>
@@ -84,7 +84,17 @@
                                     </select>
                               </div>
 
-                              <button class="btn btn-primary" id="createcard" type="submit">Create</button>
+                              <div class="form-group">
+                                    <label for="outputdpi">Output DPI</label>
+                                    <input class="form-control" type="number" id="outputdpi" min="96" max="900" value="300" required>
+                              </div>
+
+                              <div class="form-group">
+                                    <label for="outputmargin">Output Margin (mm)</label>
+                                    <input class="form-control" type="number" id="outputmargin" min="0" max="10" value="3" required>
+                              </div>
+
+                              <button class="btn btn-primary" id="createcard">Create</button>
                         </form>
                   </div>
 
