@@ -21,18 +21,32 @@
 
 <body class="bg-light">
 
-      <div">
-            <div class="container">
-                  <h1>StrataGen</h1>
-                  <p class="lead">Generate Warhammer 40k data cards.</p> 
-                  <p>Create and export stratagem, psychic power and tactical objective data cards for Warhammer 40k.</p>     
-                  <hr class="my-4">
-            </div>
+      <div class="container">
+            <h1>StrataGen</h1>
+            <p class="lead">Generate Warhammer 40k data cards.</p> 
+            <p>Create and export stratagem, psychic power and tactical objective data cards for Warhammer 40k.</p>     
+            <hr class="my-4">
       </div>
 
+      <div class="container">
+            <div class="input-group col-md-6">
+                  <div class="custom-file">
+                        <input type="file" class="custom-file-input" files="datacardfile" id="datacardfile" name="datacardfile">
+                        <label class="custom-file-label" for="datacardfile">Select datacard file (.csv or .tsv)</label>
+                  </div>
+            </div>      
+      </div>
+
+      <div class="container">
+            <hr class="my-4">
+            <button class="btn btn-secondary" id="previouscard">Previous Card</button>
+            <button class="btn btn-secondary" id="nextcard">Next Card</button>
+            <hr class="my-4">
+      </div>
+ 
       <div class="container">      
             <div class="row">
-                  <div class="col-md-6 order-md-1">
+                  <div class="col-md-6 order-md-1">                        
                         <h4 class="mb-3">Card Details</h4>
                         <form action="">
                               <div class="form-group">
@@ -117,6 +131,23 @@
             </footer>
       </div>
 
+      <!-- Error dialog -->
+      <div class="modal fade" id="errorDialog">
+            <div class="modal-dialog">
+                  <div class="modal-content">
+                        <div class="modal-header">
+                              <h4 class="modal-title">Message</h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body" id="errorText">
+                        </div>
+                        <div class="modal-footer">
+                              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        </div>
+                  </div>
+            </div>
+      </div>
+      
       <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
       <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>

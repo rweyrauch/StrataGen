@@ -1,29 +1,30 @@
 import { Card, CardType } from "./card";
 
-let myCard: Card | null = null;
+let activeCards: Card[] = [];
+let currentCard = 0;
 
 function updatePreview() {
     let canvas = document.getElementById('preview') as HTMLCanvasElement;
-    if (canvas && myCard) {
-        myCard.draw(canvas, 0);      
+    if (canvas && activeCards[currentCard]) {
+        activeCards[currentCard].draw(canvas, 0);      
     }
 }
 
 function onCardTypeChanged(event: Event) {
     const selectElem = event.target as HTMLSelectElement;
-    if (selectElem && myCard) {
-        myCard._heading = selectElem.selectedOptions[0].text;
+    if (selectElem && activeCards[currentCard]) {
+        activeCards[currentCard]._heading = selectElem.selectedOptions[0].text;
 
         // TODO: update the text in the Header input to match.
 
         if (selectElem.selectedOptions[0].text == 'Stratagem') {
-            myCard._type = CardType.Stratagem;
+            activeCards[currentCard]._type = CardType.Stratagem;
         }
         else if (selectElem.selectedOptions[0].text == 'Psychic Power') {
-            myCard._type = CardType.PsychicPower;
+            activeCards[currentCard]._type = CardType.PsychicPower;
         }
         else if (selectElem.selectedOptions[0].text == 'Tactical Objective') {
-            myCard._type = CardType.TacticalObjective;
+            activeCards[currentCard]._type = CardType.TacticalObjective;
         }
     
         updatePreview();
@@ -32,49 +33,59 @@ function onCardTypeChanged(event: Event) {
 
 function onCardStyleChanged(event: Event) {
     const selectElem = event.target as HTMLSelectElement;
-    if (selectElem && myCard) {
+    if (selectElem && activeCards[currentCard]) {
         // TODO: implement style
     }
 }
 
 function onHeaderChanged(event: Event) {
     const inputElem = event.target as HTMLInputElement;
-    if (inputElem && myCard) {
-        myCard._heading = inputElem.value;
+    if (inputElem && activeCards[currentCard]) {
+        activeCards[currentCard]._heading = inputElem.value;
         updatePreview();
     }
 }
 
 function onTitleChanged(event: Event) {
     const inputElem = event.target as HTMLInputElement;
-    if (inputElem && myCard) {
-        myCard._title = inputElem.value;
+    if (inputElem && activeCards[currentCard]) {
+        activeCards[currentCard]._title = inputElem.value;
         updatePreview();
     }
 }
 
 function onRuleChanged(event: Event) {
     const inputElem = event.target as HTMLInputElement;
-    if (inputElem && myCard) {
-        myCard._rule = inputElem.value;
+    if (inputElem && activeCards[currentCard]) {
+        activeCards[currentCard]._rule = inputElem.value;
         updatePreview();
     }
 }
 
 function onFluffChanged(event: Event) {
     const inputElem = event.target as HTMLInputElement;
-    if (inputElem && myCard) {
-        myCard._fluff = inputElem.value;
+    if (inputElem && activeCards[currentCard]) {
+        activeCards[currentCard]._fluff = inputElem.value;
         updatePreview();
     }
 }
 
 function onCPChanged(event: Event) {
     const inputElem = event.target as HTMLInputElement;
-    if (inputElem && myCard) {
-        myCard._value = inputElem.value;
+    if (inputElem && activeCards[currentCard]) {
+        activeCards[currentCard]._value = inputElem.value;
         updatePreview();
     }
+}
+
+function onPreviousCard() {
+    currentCard = Math.max(currentCard-1, 0);
+    updatePreview();
+}
+
+function onNextCard() {
+    currentCard = Math.min(currentCard+1, activeCards.length-1);
+    updatePreview();
 }
 
 function mmToInches(mm: number): number {
@@ -82,7 +93,7 @@ function mmToInches(mm: number): number {
 }
 
 function handleCreate() {
-    if (myCard) {
+    if (activeCards[currentCard]) {
         const cardSizeMm = [63, 88];
 
         let dpi = 300;
@@ -101,7 +112,7 @@ function handleCreate() {
 
         console.log("Saved cavas size: " + canvas.width + ", " + canvas.height);
 
-        myCard.draw(canvas, marginPx);
+        activeCards[currentCard].draw(canvas, marginPx);
 
         let link = document.createElement('a');
         link.download = 'stratagem.png';
@@ -110,34 +121,87 @@ function handleCreate() {
     }
 }
 
+function getFileExtension(filename: string): string {
+    const substrings = filename.split('.');
+    if (substrings.length > 1) {
+        return substrings[substrings.length - 1].toLowerCase();
+    }
+    return "";
+}
+
+function handleFileSelect(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const files = input.files;
+
+    if (files) {
+        currentCard = 0;
+        activeCards.length = 0;
+
+        // files is a FileList of File objects. List some properties.
+        let output = [];
+        for (let f of files) {
+
+            const fileExt = getFileExtension(f.name);
+            if (fileExt === "csv" || fileExt === 'tsv') {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Create a list of cards, make the first card active.
+                    const re = e.target;
+                    if (re && re.result) {
+                        let sourceData = re.result;
+                        // Skip encoding tag
+                        const csvdatastart = sourceData.toString().indexOf(',') + 1;
+                        const csvdata = window.atob(sourceData.toString().slice(csvdatastart));            
+                        //activeCards.push(createCardFrom);
+                        const csvarray = csvdata.split(/\r?\n/g);
+                        for (let c of csvarray) {
+                            const fields = c.split(fileExt === 'csv' ? ',' : '\t');
+                            console.log("Num fields: " + fields.length);
+                            if (fields.length == 5) {
+                                let card = new Card();
+                                card._value = fields[0];
+                                card._title = fields[1];
+                                card._heading = fields[2];
+                                card._fluff = fields[3];
+                                card._rule = fields[4];
+                                activeCards.push(card);
+                            }
+                        }
+                        updatePreview();
+                    }
+                }
+                reader.readAsDataURL(f);
+            }
+            else {
+                $('#errorText').html('StrataGen only supports .csv files.  Selected file is a \'' + fileExt + "\' file.");
+                $('#errorDialog').modal();
+            }
+        }
+    }
+}
+
 function plumbCallbacks() {
 
-    const cardTypeSelect = document.getElementById('cardtype');
-    if (cardTypeSelect) cardTypeSelect.addEventListener('change', onCardTypeChanged);
-    const cardStyleSelect = document.getElementById('cardstyle');
-    if (cardStyleSelect) cardStyleSelect.addEventListener('change', onCardStyleChanged);
+    $('#previouscard').click(onPreviousCard);
+    $('#nextcard').click(onNextCard);
 
-    const cardHeaderInput = document.getElementById('cardheader');
-    if (cardHeaderInput) cardHeaderInput.addEventListener('input', onHeaderChanged);
-    const cardTitleInput = document.getElementById('cardtitle');
-    if (cardTitleInput) cardTitleInput.addEventListener('input', onTitleChanged);
-    const cardRuleInput = document.getElementById('cardrule');
-    if (cardRuleInput) cardRuleInput.addEventListener('input', onRuleChanged);
-    const cardFluffInput = document.getElementById('cardfluff');
-    if (cardFluffInput) cardFluffInput.addEventListener('input', onFluffChanged);
-
-    const cardCPInput = document.getElementById('commandpoints');
-    if (cardCPInput) cardCPInput.addEventListener('input', onCPChanged);
-
-    const createCard = document.getElementById('createcard');
-    if (createCard) createCard.addEventListener('click', handleCreate);
+    $('#cardtype').on('change', onCardTypeChanged);
+    $('#cardstyle').on('change', onCardStyleChanged);
+    $('#cardheader').on('input', onHeaderChanged);
+    $('#cardtitle').on('input', onTitleChanged);
+    $('#cardrule').on('input', onRuleChanged);
+    $('#cardfluff').on('input', onFluffChanged);
+    $('#commandpoints').on('input', onCPChanged);
+    $('#createcard').click(handleCreate);
+    $('#datacardfile').on('change', handleFileSelect);
 }
 
 let canvas = document.getElementById('preview') as HTMLCanvasElement;
 if (canvas) {
     let ctx = canvas.getContext('2d');
     if (ctx) {
-        myCard = new Card();
+        currentCard = 0;
+        activeCards[currentCard] = new Card();
     }
 }
 
