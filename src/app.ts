@@ -15,7 +15,8 @@ function onCardTypeChanged(event: Event) {
     if (selectElem && activeCards[currentCard]) {
         activeCards[currentCard]._heading = selectElem.selectedOptions[0].text;
 
-        // TODO: update the text in the Header input to match.
+        // Update the text in the Header input to match.
+        $('#cardheader').val(activeCards[currentCard]._heading);
 
         if (selectElem.selectedOptions[0].text == 'Stratagem') {
             activeCards[currentCard]._type = CardType.Stratagem;
@@ -25,6 +26,9 @@ function onCardTypeChanged(event: Event) {
         }
         else if (selectElem.selectedOptions[0].text == 'Tactical Objective') {
             activeCards[currentCard]._type = CardType.TacticalObjective;
+        }
+        else if (selectElem.selectedOptions[0].text == 'Prayer') {
+            activeCards[currentCard]._type = CardType.Prayer;
         }
     
         updatePreview();
@@ -80,11 +84,13 @@ function onCPChanged(event: Event) {
 
 function onPreviousCard() {
     currentCard = Math.max(currentCard-1, 0);
+    updateCardUI();
     updatePreview();
 }
 
 function onNextCard() {
     currentCard = Math.min(currentCard+1, activeCards.length-1);
+    updateCardUI();
     updatePreview();
 }
 
@@ -104,13 +110,13 @@ function handleCreate() {
         if (outputMargin) marginMm = parseInt(outputMargin.value);
         // Round margin up to that is always at least the requested size.
         let marginPx = Math.ceil(mmToInches(marginMm) * dpi);
-        console.log("Margin Px" + marginPx);
+        //console.log("Margin Px" + marginPx);
 
         let canvas = document.createElement('canvas') as HTMLCanvasElement;
         canvas.width = Math.round(mmToInches(cardSizeMm[0]) * dpi) + 2 * marginPx;
         canvas.height = Math.round(mmToInches(cardSizeMm[1]) * dpi) + 2 * marginPx;
 
-        console.log("Saved cavas size: " + canvas.width + ", " + canvas.height);
+        //console.log("Saved cavas size: " + canvas.width + ", " + canvas.height);
 
         activeCards[currentCard].draw(canvas, marginPx);
 
@@ -149,24 +155,52 @@ function handleFileSelect(event: Event) {
                     const re = e.target;
                     if (re && re.result) {
                         let sourceData = re.result;
+                        
                         // Skip encoding tag
                         const csvdatastart = sourceData.toString().indexOf(',') + 1;
                         const csvdata = window.atob(sourceData.toString().slice(csvdatastart));            
-                        //activeCards.push(createCardFrom);
                         const csvarray = csvdata.split(/\r?\n/g);
+
+                        let cardType = CardType.Stratagem;
                         for (let c of csvarray) {
                             const fields = c.split(fileExt === 'csv' ? ',' : '\t');
                             console.log("Num fields: " + fields.length);
-                            if (fields.length == 5) {
-                                let card = new Card();
-                                card._value = fields[0];
-                                card._title = fields[1];
-                                card._heading = fields[2];
-                                card._fluff = fields[3];
-                                card._rule = fields[4];
-                                activeCards.push(card);
+                            if (fields.length == 1) {
+                                console.log("Type: " + fields[0]);
+                                if (fields[0].toUpperCase() == "STRATAGEMS") cardType = CardType.Stratagem;
+                                else if (fields[0].toUpperCase() === "PSYCHIC POWERS") cardType = CardType.PsychicPower;
+                                else if (fields[0].toUpperCase() === "TACTICAL OBJECTIVES") cardType = CardType.TacticalObjective;
+                                else if (fields[0].toUpperCase() === "PRAYERS") cardType = CardType.Prayer;
+                            }
+                            else {
+                                // TODO: parse based on card type.
+                                if (cardType == CardType.Prayer) {
+                                    if (fields.length == 4) {
+                                        let card = new Card();
+                                        card._type = cardType;
+                                        card._value = "";
+                                        card._title = fields[0];
+                                        card._heading = fields[1];
+                                        card._fluff = fields[2];
+                                        card._rule = fields[3];
+                                        activeCards.push(card);
+                                    }
+                                }
+                                else {
+                                    if (fields.length == 5) {
+                                        let card = new Card();
+                                        card._type = cardType;
+                                        card._value = fields[0];
+                                        card._title = fields[1];
+                                        card._heading = fields[2];
+                                        card._fluff = fields[3];
+                                        card._rule = fields[4];
+                                        activeCards.push(card);
+                                    }
+                                }
                             }
                         }
+                        updateCardUI();
                         updatePreview();
                     }
                 }
@@ -177,6 +211,17 @@ function handleFileSelect(event: Event) {
                 $('#errorDialog').modal();
             }
         }
+    }
+}
+
+function updateCardUI() {
+    if (activeCards[currentCard]) {
+        $('#cardtype').val(activeCards[currentCard]._type.toString());
+        $('#cardheader').val(activeCards[currentCard]._heading);
+        $('#cardtitle').val(activeCards[currentCard]._title);
+        $('#cardrule').val(activeCards[currentCard]._rule);
+        $('#cardfluff').val(activeCards[currentCard]._fluff);
+        $('#commandpoints').val(activeCards[currentCard]._value);
     }
 }
 

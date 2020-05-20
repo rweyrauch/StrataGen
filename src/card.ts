@@ -2,7 +2,8 @@
 export enum CardType {
     Stratagem = 'Stratagem',
     PsychicPower = 'Psychic Power',
-    TacticalObjective = 'Tactical Objective'
+    TacticalObjective = 'Tactical Objective',
+    Prayer = 'Prayer'
 }
 
 export enum Justification {
@@ -199,17 +200,26 @@ export class Card {
 
         curY = this._height - borderY * 1.5 - textRegionHeight;
 
-        if (this._type == CardType.Stratagem) {
+        if ((this._type == CardType.Stratagem) || (this._type == CardType.PsychicPower)) {
+
             const cpBoxSize = textRegionHeight;
-            // TODO: Render command points
+            
+            ctx.save();
             ctx.lineWidth = Math.max(Math.ceil(this._scale), 1.0);
             this.roundRect(ctx, marginXLeft * 2 + cpBoxSize, curY, textWidth - 2 * marginXLeft - cpBoxSize, textRegionHeight - 6, 8, false, true);
-
+            ctx.restore();
+            
             ctx.save();
             ctx.font = this.footFont();
             ctx.textBaseline = 'top';
             ctx.fillStyle = 'black';
-            RenderText(ctx, 'COMMAND POINTS', marginXLeft * 2 + cpBoxSize, curY, textWidth - 2 * marginXLeft - cpBoxSize, textRegionHeight - 6, Justification.Center);
+        
+            if (this._type === CardType.Stratagem) {
+                RenderText(ctx, 'COMMAND POINTS', marginXLeft * 2 + cpBoxSize, curY, textWidth - 2 * marginXLeft - cpBoxSize, textRegionHeight - 6, Justification.Center);
+            }
+            else if (this._type === CardType.PsychicPower) {
+                RenderText(ctx, 'WARP CHARGE', marginXLeft * 2 + cpBoxSize, curY, textWidth - 2 * marginXLeft - cpBoxSize, textRegionHeight - 6, Justification.Center);
+            }
             ctx.restore();
 
             ctx.save();
@@ -225,11 +235,11 @@ export class Card {
             RenderText(ctx, this._value, marginXLeft * 2, curY - 3, cpBoxSize, cpBoxSize, Justification.Center);
             ctx.restore();
         }
-        else if (this._type == CardType.PsychicPower) {
-            // TODO: Render warp charge
-        }
         else if (this._type == CardType.TacticalObjective) {
-            // TODO: Render object number
+            // TODO: Render objective number and footer label.
+        }
+        else if (this._type == CardType.Prayer) {
+            // Nothing to do for prayers.
         }
     }
 
