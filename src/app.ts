@@ -32,6 +32,7 @@ function onCardTypeChanged(event: Event) {
             activeCards[currentCard]._type = CardType.Prayer;
         }
 
+        updateCardUI();
         updatePreview();
     }
 }
@@ -75,7 +76,7 @@ function onFluffChanged(event: Event) {
     }
 }
 
-function onCPChanged(event: Event) {
+function onValueChanged(event: Event) {
     const inputElem = event.target as HTMLInputElement;
     if (inputElem && activeCards[currentCard]) {
         activeCards[currentCard]._value = inputElem.value;
@@ -252,7 +253,26 @@ function updateCardUI() {
         $('#cardtitle').val(activeCards[currentCard]._title);
         $('#cardrule').val(activeCards[currentCard]._rule);
         $('#cardfluff').val(activeCards[currentCard]._fluff);
-        $('#commandpoints').val(activeCards[currentCard]._value);
+        $('#cardvalue').val(activeCards[currentCard]._value);
+
+        if (activeCards[currentCard]._type === CardType.Stratagem) {
+            $('#cardvalue').attr({"min": 1, "max": 3});
+            $('#cardvaluelabel').html("Command Points");
+            $('#cardvaluecontrol').show();
+        }
+        else if (activeCards[currentCard]._type === CardType.PsychicPower) {
+            $('#cardvalue').attr({"min": 2, "max": 12});
+            $('#cardvaluelabel').html("Warp Charge");
+            $('#cardvaluecontrol').show();
+        }
+        else if (activeCards[currentCard]._type === CardType.TacticalObjective) {
+            $('#cardvalue').attr({"min": 1, "max": 99});
+            $('#cardvaluelabel').html("Objective ID");            
+            $('#cardvaluecontrol').show();
+        }
+        else if (activeCards[currentCard]._type === CardType.Prayer) {
+            $('#cardvaluecontrol').hide();
+        }
     }
 }
 
@@ -267,7 +287,7 @@ function plumbCallbacks() {
     $('#cardtitle').on('input', onTitleChanged);
     $('#cardrule').on('input', onRuleChanged);
     $('#cardfluff').on('input', onFluffChanged);
-    $('#commandpoints').on('input', onCPChanged);
+    $('#cardvalue').on('input', onValueChanged);
     $('#createcard').click(handleCreate);
     $('#datacardfile').on('change', handleFileSelect);
 
