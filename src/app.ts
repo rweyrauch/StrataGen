@@ -1,4 +1,5 @@
 import { Card, CardType } from "./card";
+import { serialize, deserialize } from "typescript-json-serializer";
 
 let activeCards: Card[] = [];
 let currentCard = 0;
@@ -124,6 +125,11 @@ function handleCreate() {
         link.download = 'stratagem.png';
         link.href = canvas.toDataURL("image/png");
         link.click();
+
+        console.log("Current card: " + currentCard + " Num active cards: " + activeCards.length);
+        // Refresh the previewed card.
+        updateCardUI();
+        updatePreview();
     }
 }
 
@@ -200,6 +206,8 @@ function handleFileSelect(event: Event) {
                                 }
                             }
                         }
+                        currentCard = 0;
+                        console.log("Num active cards: " + activeCards.length);
                         updateCardUI();
                         updatePreview();
                     }
@@ -211,6 +219,22 @@ function handleFileSelect(event: Event) {
                 $('#errorDialog').modal();
             }
         }
+    }
+}
+
+function onSaveCard() {
+    localStorage.setItem('lastCard', JSON.stringify(serialize(activeCards[currentCard])));
+}
+
+function onLoadCard() {
+    let lastCardString = localStorage.getItem('lastCard');
+    if (lastCardString) {
+        activeCards[currentCard] = deserialize<Card>(JSON.parse(lastCardString), Card);
+        updateCardUI();
+        updatePreview();
+    }
+    else {
+        console.log("Card not loaded.");
     }
 }
 
@@ -239,14 +263,21 @@ function plumbCallbacks() {
     $('#commandpoints').on('input', onCPChanged);
     $('#createcard').click(handleCreate);
     $('#datacardfile').on('change', handleFileSelect);
+
+    $('#savecard').click(onSaveCard);
+    $('#loadcard').click(onLoadCard);
 }
+
+console.log("Reloading web page.");
 
 let canvas = document.getElementById('preview') as HTMLCanvasElement;
 if (canvas) {
     let ctx = canvas.getContext('2d');
     if (ctx) {
-        currentCard = 0;
-        activeCards[currentCard] = new Card();
+        if (activeCards.length == 0) {
+            currentCard = 0;
+            activeCards[currentCard] = new Card();
+        }
     }
 }
 

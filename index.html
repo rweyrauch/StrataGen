@@ -48,7 +48,7 @@
             <div class="row">
                   <div class="col-md-6 order-md-1">                        
                         <h4 class="mb-3">Card Details</h4>
-                        <form action="">
+                        <form>
                               <div class="form-group">
                                     <label for="cardtype">Card Type</label>
                                     <select class="form-control" name="" id="cardtype">
@@ -109,8 +109,11 @@
                                     <input class="form-control" type="number" id="outputmargin" min="0" max="10" value="3" required>
                               </div>
 
-                              <button class="btn btn-primary" id="createcard">Create</button>
                         </form>
+
+                        <button class="btn btn-primary" id="createcard">Create</button>
+                        <button class="btn btn-secondary" id="savecard">Save</button>
+                        <button class="btn btn-secondary" id="loadcard">Load</button>
                   </div>
 
                   <div class="col-md-6 order-md-2 mb-4">

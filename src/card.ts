@@ -1,3 +1,4 @@
+import { JsonProperty, Serializable } from 'typescript-json-serializer';
 
 export enum CardType {
     Stratagem = 'Stratagem',
@@ -74,22 +75,23 @@ export function RenderParagraph(ctx: CanvasRenderingContext2D, text: string, x: 
     return curY;
 }
 
+@Serializable()
 export class Card {
 
     private static readonly defaultWidthPx = 400;
     private static readonly defaultHeightPx = 560;
 
-    private _width: number = Card.defaultWidthPx;
-    private _height: number = Card.defaultHeightPx;
-    private _scale: number = 1;
+    @JsonProperty() private _width: number = Card.defaultWidthPx;
+    @JsonProperty() private _height: number = Card.defaultHeightPx;
+    @JsonProperty() private _scale: number = 1;
 
-    public _type: CardType = CardType.Stratagem;
+    @JsonProperty() public _type: CardType = CardType.Stratagem;
 
-    public _heading: string = "Stratagem";
-    public _title: string = "<Title>";
-    public _fluff: string = "<Fluff text>";
-    public _rule: string = "<Rule text>"
-    public _value: string = "1";
+    @JsonProperty() public _heading: string = "Stratagem";
+    @JsonProperty() public _title: string = "<Title>";
+    @JsonProperty() public _fluff: string = "<Fluff text>";
+    @JsonProperty() public _rule: string = "<Rule text>"
+    @JsonProperty() public _value: string = "1";
 
     private headerFont(): string {
         return Math.round(24*this._scale).toString() + 'px ' + 'Teko';
