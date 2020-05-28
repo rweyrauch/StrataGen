@@ -7,7 +7,7 @@ let currentCard = 0;
 function updatePreview() {
     let canvas = document.getElementById('preview') as HTMLCanvasElement;
     if (canvas && activeCards[currentCard]) {
-        activeCards[currentCard].draw(canvas, 0);      
+        activeCards[currentCard].draw(canvas, 0);
     }
 }
 
@@ -31,7 +31,7 @@ function onCardTypeChanged(event: Event) {
         else if (selectElem.selectedOptions[0].text == 'Prayer') {
             activeCards[currentCard]._type = CardType.Prayer;
         }
-    
+
         updatePreview();
     }
 }
@@ -84,19 +84,19 @@ function onCPChanged(event: Event) {
 }
 
 function onPreviousCard() {
-    currentCard = Math.max(currentCard-1, 0);
+    currentCard = Math.max(currentCard - 1, 0);
     updateCardUI();
     updatePreview();
 }
 
 function onNextCard() {
-    currentCard = Math.min(currentCard+1, activeCards.length-1);
+    currentCard = Math.min(currentCard + 1, activeCards.length - 1);
     updateCardUI();
     updatePreview();
 }
 
 function mmToInches(mm: number): number {
-    return mm / 25.4; 
+    return mm / 25.4;
 }
 
 function handleCreate() {
@@ -156,51 +156,58 @@ function handleFileSelect(event: Event) {
             const fileExt = getFileExtension(f.name);
             if (fileExt === "csv" || fileExt === 'tsv') {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     // Create a list of cards, make the first card active.
                     const re = e.target;
                     if (re && re.result) {
                         let sourceData = re.result;
-                        
+
                         // Skip encoding tag
                         const csvdatastart = sourceData.toString().indexOf(',') + 1;
-                        const csvdata = window.atob(sourceData.toString().slice(csvdatastart));            
+                        const csvdata = window.atob(sourceData.toString().slice(csvdatastart));
                         const csvarray = csvdata.split(/\r?\n/g);
 
                         let cardType = CardType.Stratagem;
                         for (let c of csvarray) {
                             const fields = c.split(fileExt === 'csv' ? ',' : '\t');
-                            console.log("Num fields: " + fields.length);
-                            if (fields.length == 1) {
+
+                            if (fields.length > 1) {
+                                // field[0] -> type
                                 console.log("Type: " + fields[0]);
-                                if (fields[0].toUpperCase() == "STRATAGEMS") cardType = CardType.Stratagem;
-                                else if (fields[0].toUpperCase() === "PSYCHIC POWERS") cardType = CardType.PsychicPower;
-                                else if (fields[0].toUpperCase() === "TACTICAL OBJECTIVES") cardType = CardType.TacticalObjective;
-                                else if (fields[0].toUpperCase() === "PRAYERS") cardType = CardType.Prayer;
-                            }
-                            else {
+                                if (fields[0].toUpperCase() == "STRATAGEM") cardType = CardType.Stratagem;
+                                else if (fields[0].toUpperCase() === "PSYCHIC POWER") cardType = CardType.PsychicPower;
+                                else if (fields[0].toUpperCase() === "TACTICAL OBJECTIVE") cardType = CardType.TacticalObjective;
+                                else if (fields[0].toUpperCase() === "PRAYER") cardType = CardType.Prayer;
+                                else {
+                                    // Unknown card type!
+                                    // TOOD: Improve error handling.
+                                    $('#errorText').html('Unknown card type: ' + fields[0] + '.  Supported card types are ' +
+                                        'STRATAGEM, PSYCHIC POWER, PRAYER and TACTICAL OBJECTIVE.');
+                                    $('#errorDialog').modal();
+                                }
+
                                 // TODO: parse based on card type.
                                 if (cardType == CardType.Prayer) {
-                                    if (fields.length == 4) {
-                                        let card = new Card();
-                                        card._type = cardType;
-                                        card._value = "";
-                                        card._title = fields[0];
-                                        card._heading = fields[1];
-                                        card._fluff = fields[2];
-                                        card._rule = fields[3];
-                                        activeCards.push(card);
-                                    }
-                                }
-                                else {
                                     if (fields.length == 5) {
                                         let card = new Card();
                                         card._type = cardType;
-                                        card._value = fields[0];
+                                        card._value = "";
                                         card._title = fields[1];
                                         card._heading = fields[2];
                                         card._fluff = fields[3];
                                         card._rule = fields[4];
+                                        activeCards.push(card);
+                                    }
+                                }
+                                else {
+                                    if (fields.length == 6) {
+                                        let card = new Card();
+                                        card._type = cardType;
+                                        card._value = fields[1];
+                                        card._title = fields[2];
+                                        card._heading = fields[3];
+                                        card._fluff = fields[4];
+                                        card._rule = fields[5];
                                         activeCards.push(card);
                                     }
                                 }
