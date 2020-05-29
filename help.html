@@ -38,9 +38,111 @@
         </div>
     </nav>
 
-    <div class="row">
+    <div class="container">
         <div class="col-md-12">
-            <h4>Bugs</h4>
+            <h2>Overview</h2>
+            <p>
+                StrataGen provides a tool for creating reasonably nice look data cards for Warhammer 40k.  The cards may be saved
+                image files and printed however you see fit.
+            </p>
+            <h2>Single Card</h2>
+            <p>
+                StrataGen allows the creation of a single data card by simply filling in the Card Details form and pressing the
+                Create button.
+            </p>
+            <h2>Batch Mode</h2>
+            <p>
+                StrataGen can also create a set of cards from a specially formatted text file.   This text file contains a list of
+                tab (*.tsv) or comma (*.csv) seperated fields describing the cards to be created.  StrataGen expects each line in 
+                file to begin with a field describing the card type to create.   The card type field must be one of the following:
+                <ul>
+                    <li>STRATAGEM</li>
+                    <li>PSYCHIC POWER</li>
+                    <li>PRAYER</li>
+                    <li>TACTICAL OBJECT</li>
+                </ul>
+                The fields following the card type are dependent on the type of card specified as shown below:
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">Card Type</th>
+                            <th scope="col">Field 1</th>
+                            <th scope="col">Field 2</th>
+                            <th scope="col">Field 3</th>
+                            <th scope="col">Field 4</th>
+                            <th scope="col">Field 5</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>STRATAGEM</td>
+                            <td>Command points (number)</td>
+                            <td>Stratagem name</td>
+                            <td>Card header</td>
+                            <td>Stratagem fluff description</td>
+                            <td>Stratagem rule text</td>
+                        </tr>
+                        <tr>
+                            <td>PSYCHIC POWER</td>
+                            <td>Warp charge (number)</td>
+                            <td>Power name</td>
+                            <td>Card header</td>
+                            <td>Power fluff description</td>
+                            <td>Power rule text</td>
+                        </tr>
+                        <tr>
+                            <td>TACTICAL OBJECTIVE</td>
+                            <td>Id number (number)</td>
+                            <td>Objective name</td>
+                            <td>Card header</td>
+                            <td>Objective fluff description</td>
+                            <td>Objective rule text</td>
+                        </tr>
+                        <tr>
+                            <td>PRAYER</td>
+                            <td>Prayer name</td>
+                            <td>Card header</td>
+                            <td>Prayer fluff description</td>
+                            <td>Prayer rule text</td>
+                            <td>--Empty--</td>
+                        </tr>
+                    </tbody>
+                </table>
+                It is recommended to use tab-separated fields to permit the fluff and rule text to contain commas.
+            </p>
+            <h4>Example Input For Batch Mode</h4>
+            <p>
+                <pre><code>
+STRATAGEM,2,Insane Bravery,Stratagem,This unit is not impressed.,Automatically pass morale for a single unit.
+PSYCHIC POWER,7,Magic Missile,Psychic Power,Bolts of energy errupt from...,Magic Missile has a warp charge of 7. The nearest unit takes D3 wounds.
+PRAYER,Mantra of Fail,Litanies of Fun,The Chaplain focuses his mind and fails.,If this litany is inspiring nothing happens.
+                </code></pre>
+            </p>
+        </div>
+        <div class="col-md-12">
+            <h2>Usage</h2>
+            <h3>Create Single Card</h3>
+            <p>
+                Select the card type and fill in the form as desired.   The fluff text is optional.   The Preview image 
+                updates as the form is filled in.   Press the Create button save the card as a png file.
+            </p>
+        </div>
+        <div class="col-md-12">
+            <h3>Batch Create</h3>
+            <p>
+                Use the file selector control to load a data card input file.   Use the Previous and Next Card buttons to
+                view each of the cards loaded.  Cards must be saved as image files one a time using the Create button.
+            </p>
+        </div>
+        <div class="col-md-12">
+            <h3>Saving and Loading Current Card</h3>
+            <p>
+                The currently displayed card may be saved in the browser and restored for later.  Press the Save
+                button to save the current card and the Load button to restore the card later on.
+            </p>
+        </div>
+        <div class="col-md-12">
+            <h2>Bugs</h2>
             <p>
                 Bugs, suggestions and enhancements can all be posted on the
                 <a href="https://github.com/rweyrauch/StrataGen/issues">StrataGen GitHub</a> website.

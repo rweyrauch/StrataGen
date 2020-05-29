@@ -21,31 +21,12 @@
 
 <body class="bg-light">
 
-      <div class="container">
-            <h1>StrataGen</h1>
-            <p class="lead">Generate Warhammer 40k data cards.</p> 
-            <p>Create and export stratagem, psychic power and tactical objective data cards for Warhammer 40k.</p>     
-            <hr class="my-4">
+      <div class="container bg-secondary py-2">
+            <h1 class="text-light">StrataGen</h1>
+            <p class="lead text-light">Generate Warhammer 40k data cards.</p> 
+            <p class="text-light">Create and export stratagem, psychic power and tactical objective data cards for Warhammer 40k.</p>     
       </div>
 
-      <div class="container">
-            <h4>Batch Mode</h4>
-            <div class="input-group col-md-6">
-                  <div class="custom-file">
-                        <input type="file" class="custom-file-input" files="datacardfile" id="datacardfile" name="datacardfile">
-                        <label class="custom-file-label" for="datacardfile">Select datacard file (.csv or .tsv)</label>
-                  </div>
-                  <button class="btn btn-secondary" id="batchhelp">Help</button>
-            </div>      
-      </div>
-
-      <div class="container">
-            <hr class="my-4">
-            <button class="btn btn-secondary" id="previouscard">Previous Card</button>
-            <button class="btn btn-secondary" id="nextcard">Next Card</button>
-            <hr class="my-4">
-      </div>
- 
       <div class="container">      
             <div class="row">
                   <div class="col-md-6 order-md-1">                        
@@ -126,6 +107,23 @@
                               
                         </canvas>
                   </div>
+            </div>
+
+            <div class="container">
+                  <hr class="my-4">
+
+                  <h4>Batch Mode</h4>
+                  <div class="input-group col-md-6">
+                        <div class="custom-file">
+                              <input type="file" class="custom-file-input" files="datacardfile" id="datacardfile" name="datacardfile">
+                              <label class="custom-file-label" for="datacardfile">Select datacard file (.csv or .tsv)</label>
+                        </div>
+                  </div> 
+                  
+                  <hr class="my-4">
+                  <button class="btn btn-secondary" id="previouscard">Previous Card</button>
+                  <button class="btn btn-secondary" id="nextcard">Next Card</button>
+                  <hr class="my-4">
             </div>
 
             <footer class="my-5 pt-5 text-muted text-center text-small">
