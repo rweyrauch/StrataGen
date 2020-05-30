@@ -32,9 +32,9 @@
                   <div class="col-md-6 order-md-1">                        
                         <h4 class="mb-3">Card Details</h4>
                         <form>
-                              <div class="form-group">
-                                    <label for="cardtype">Card Type</label>
-                                    <select class="form-control" name="" id="cardtype">
+                              <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label" for="cardtype">Card Type</label>
+                                    <select class="form-control col-sm-9" name="" id="cardtype">
                                           <option value="Stratagem">Stratagem</option>
                                           <option value="Psychic Power">Psychic Power</option>
                                           <option value="Tactical Objective">Tactical Objective</option>
@@ -42,33 +42,33 @@
                                     </select>
                               </div>
 
-                              <div class="form-group">
-                                    <label for="cardheader">Header</label>
-                                    <input class="form-control" type="text" id="cardheader" placeholder=""
+                              <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label" for="cardheader">Header</label>
+                                    <input class="form-control col-sm-9" type="text" id="cardheader" placeholder=""
                                           value="Stratagem">
                               </div>
 
-                              <div class="form-group">
-                                    <label for="cardtitle">Title</label>
-                                    <input class="form-control" type="text" id="cardtitle" placeholder="Title" value=""
+                              <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label" for="cardtitle">Title</label>
+                                    <input class="form-control col-sm-9" type="text" id="cardtitle" placeholder="Title" value=""
                                           required>
                               </div>
 
-                              <div class="form-group">
-                                    <label for="cardfluff">Fluff</label>
-                                    <textarea class="form-control" type="text" id="cardfluff" cols="40" rows="5"
+                              <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label" for="cardfluff">Fluff</label>
+                                    <textarea class="form-control col-sm-9" type="text" id="cardfluff" cols="40" rows="5"
                                           placeholder="Fluff text"></textarea>
                               </div>
 
-                              <div class="form-group">
-                                    <label for="cardrule">Rule</label>
-                                    <textarea class="form-control" name="" id="cardrule" cols="40" rows="5"
+                              <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label" for="cardrule">Rule</label>
+                                    <textarea class="form-control col-sm-9" name="" id="cardrule" cols="40" rows="5"
                                           placeholder="Rule text" required></textarea>
                               </div>
 
-                              <div class="form-group" id="cardvaluecontrol">
-                                    <label for="cardvalue" id="cardvaluelabel">Command Points</label>
-                                    <input class="form-control" type="number" id="cardvalue" min="1" max="3" value="1"
+                              <div class="form-group row" id="cardvaluecontrol">
+                                    <label class="col-sm-6 col-form-label" for="cardvalue" id="cardvaluelabel">Command Points</label>
+                                    <input class="form-control col-sm-6" type="number" id="cardvalue" min="1" max="3" value="1"
                                           required>
                               </div>
 
@@ -81,17 +81,6 @@
                                           <option value="">Orky</option>
                                     </select>
                               </div>
-
-                              <div class="form-group">
-                                    <label for="outputdpi">Output DPI</label>
-                                    <input class="form-control" type="number" id="outputdpi" min="96" max="900" value="300" required>
-                              </div>
-
-                              <div class="form-group">
-                                    <label for="outputmargin">Output Margin (mm)</label>
-                                    <input class="form-control" type="number" id="outputmargin" min="0" max="10" value="3" required>
-                              </div>
-
                         </form>
 
                         <button class="btn btn-primary" id="createcard">Create</button>
@@ -103,10 +92,23 @@
                         <h4 class="d-flex justify-content-between align-items-center mb-3">
                               <span class="text-muted">Preview</span>
                         </h4>
-                        <canvas id="preview" width="400" height="560">
-                              
-                        </canvas>
-                  </div>
+                        <div style="text-align:center">
+                              <canvas id="preview" width="400" height="560">   
+                              </canvas>      
+                        </div>
+
+                        <form>
+                              <div class="form-group row">
+                                    <label class="col-sm-6 col-form-label" for="outputdpi">Output DPI</label>
+                                    <input class="form-control col-sm-6" type="number" id="outputdpi" min="96" max="900" value="300" required>
+                              </div>
+      
+                              <div class="form-group row">
+                                    <label class="col-sm-6 col-form-label" for="outputmargin">Output Margin (mm)</label>
+                                    <input class="form-control col-sm-6" type="number" id="outputmargin" min="0" max="10" value="3" required>
+                              </div>      
+                        </form>
+                   </div>
             </div>
 
             <div class="container">
