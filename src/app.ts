@@ -253,26 +253,36 @@ function updateCardUI() {
         $('#cardtitle').val(activeCards[currentCard]._title);
         $('#cardrule').val(activeCards[currentCard]._rule);
         $('#cardfluff').val(activeCards[currentCard]._fluff);
-        $('#cardvalue').val(activeCards[currentCard]._value);
 
         if (activeCards[currentCard]._type === CardType.Stratagem) {
             $('#cardvalue').attr({"min": 1, "max": 3});
+            if (parseInt(activeCards[currentCard]._value) > 3) activeCards[currentCard]._value = "3";
+            else if (parseInt(activeCards[currentCard]._value) < 1) activeCards[currentCard]._value = "1";
+
             $('#cardvaluelabel').html("Command Points");
             $('#cardvaluecontrol').show();
         }
         else if (activeCards[currentCard]._type === CardType.PsychicPower) {
             $('#cardvalue').attr({"min": 2, "max": 12});
+            if (parseInt(activeCards[currentCard]._value) > 12) activeCards[currentCard]._value = "12";
+            else if (parseInt(activeCards[currentCard]._value) < 2) activeCards[currentCard]._value = "2";
+
             $('#cardvaluelabel').html("Warp Charge");
             $('#cardvaluecontrol').show();
         }
         else if (activeCards[currentCard]._type === CardType.TacticalObjective) {
-            $('#cardvalue').attr({"min": 1, "max": 99});
-            $('#cardvaluelabel').html("Objective ID");            
+            $('#cardvalue').attr({"min": 11, "max": 66});
+            if (parseInt(activeCards[currentCard]._value) > 66) activeCards[currentCard]._value = "66";
+            else if (parseInt(activeCards[currentCard]._value) < 11) activeCards[currentCard]._value = "11";
+            
+            $('#cardvaluelabel').html("Objective (D66)");            
             $('#cardvaluecontrol').show();
         }
         else if (activeCards[currentCard]._type === CardType.Prayer) {
             $('#cardvaluecontrol').hide();
         }
+
+        $('#cardvalue').val(activeCards[currentCard]._value);
     }
 }
 

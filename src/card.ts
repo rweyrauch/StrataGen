@@ -202,7 +202,7 @@ export class Card {
 
         curY = this._height - borderY * 1.5 - textRegionHeight;
 
-        if ((this._type == CardType.Stratagem) || (this._type == CardType.PsychicPower)) {
+        if ((this._type == CardType.Stratagem) || (this._type == CardType.PsychicPower) || (this._type == CardType.TacticalObjective)) {
 
             const cpBoxSize = textRegionHeight;
             
@@ -216,12 +216,17 @@ export class Card {
             ctx.textBaseline = 'top';
             ctx.fillStyle = 'black';
         
+            let footText = 'COMMAND POINTS';
             if (this._type === CardType.Stratagem) {
-                RenderText(ctx, 'COMMAND POINTS', marginXLeft * 2 + cpBoxSize, curY, textWidth - 2 * marginXLeft - cpBoxSize, textRegionHeight - 6, Justification.Center);
+               footText = 'COMMAND POINTS';
             }
             else if (this._type === CardType.PsychicPower) {
-                RenderText(ctx, 'WARP CHARGE', marginXLeft * 2 + cpBoxSize, curY, textWidth - 2 * marginXLeft - cpBoxSize, textRegionHeight - 6, Justification.Center);
+                footText = 'WARP CHARGE';
             }
+            else if (this._type === CardType.TacticalObjective) {
+                footText = 'OBJECTIVE';
+            }
+            RenderText(ctx, footText, marginXLeft * 2 + cpBoxSize, curY, textWidth - 2 * marginXLeft - cpBoxSize, textRegionHeight - 6, Justification.Center)
             ctx.restore();
 
             ctx.save();
@@ -236,9 +241,6 @@ export class Card {
             ctx.fillStyle = '#f5f2f2';
             RenderText(ctx, this._value, marginXLeft * 2, curY - 3, cpBoxSize, cpBoxSize, Justification.Center);
             ctx.restore();
-        }
-        else if (this._type == CardType.TacticalObjective) {
-            // TODO: Render objective number and footer label.
         }
         else if (this._type == CardType.Prayer) {
             // Nothing to do for prayers.
