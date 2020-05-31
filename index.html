@@ -30,7 +30,7 @@
       <div class="container">      
             <div class="row">
                   <div class="col-md-6 order-md-1">                        
-                        <h4 class="mb-3">Card Details</h4>
+                        <h4 class="m-3">Card Details</h4>
                         <form>
                               <div class="form-group row">
                                     <label class="col-sm-3 col-form-label" for="cardtype">Card Type</label>
@@ -82,36 +82,40 @@
                                     </select>
                               </div>
                         </form>
-
-                        <button class="btn btn-primary" id="createcard">Create</button>
-                        <button class="btn btn-secondary" id="savecard">Save</button>
-                        <button class="btn btn-secondary" id="loadcard">Load</button>
                   </div>
-
-                  <div class="col-md-6 order-md-2 mb-4">
-                        <h4 class="d-flex justify-content-between align-items-center mb-3">
-                              <span class="text-muted">Preview</span>
-                        </h4>
+                  <hr class="my-4">
+                  <div class="col-md-6 order-md-2">
+                        <h4 class="m-3">Preview</h4>
                         <div style="text-align:center">
                               <canvas id="preview" width="400" height="560">   
                               </canvas>      
                         </div>
-
-                        <form>
-                              <div class="form-group row">
-                                    <label class="col-sm-6 col-form-label" for="outputdpi">Output DPI</label>
-                                    <input class="form-control col-sm-6" type="number" id="outputdpi" min="96" max="900" value="300" required>
-                              </div>
-      
-                              <div class="form-group row">
-                                    <label class="col-sm-6 col-form-label" for="outputmargin">Output Margin (mm)</label>
-                                    <input class="form-control col-sm-6" type="number" id="outputmargin" min="0" max="10" value="3" required>
-                              </div>      
-                        </form>
+                        <div>
+                              <button class="btn btn-secondary" id="previouscard">Previous Card</button>
+                              <button class="btn btn-secondary" id="nextcard">Next Card</button>            
+                        </div>
                    </div>
             </div>
 
+            <hr class="my-4">
+
             <div class="container">
+                  <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="outputdpi">Output DPI</label>
+                        <input class="form-control col-sm-3" type="number" id="outputdpi" min="96" max="900" value="300" required>
+                  </div>
+
+                  <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="outputmargin">Output Margin (mm)</label>
+                        <input class="form-control col-sm-3" type="number" id="outputmargin" min="0" max="10" value="3" required>
+                  </div> 
+
+                  <div>
+                        <button class="btn btn-primary m-2" id="createcard">Create</button>
+                        <button class="btn btn-secondary m-2" id="savecard">Save</button>
+                        <button class="btn btn-secondary m-2" id="loadcard">Load</button>
+                  </div>
+
                   <hr class="my-4">
 
                   <h4>Batch Mode</h4>
@@ -121,11 +125,6 @@
                               <label class="custom-file-label" for="datacardfile">Select datacard file (.csv or .tsv)</label>
                         </div>
                   </div> 
-                  
-                  <hr class="my-4">
-                  <button class="btn btn-secondary" id="previouscard">Previous Card</button>
-                  <button class="btn btn-secondary" id="nextcard">Next Card</button>
-                  <hr class="my-4">
             </div>
 
             <footer class="my-5 pt-5 text-muted text-center text-small">
