@@ -18,13 +18,13 @@
     "typescript-json-serializer": "^2.2.0"
   },
   "devDependencies": {
-    "@types/bootstrap": "^4.3.3",
+    "@types/bootstrap": "^4.5.0",
     "@types/jimp": "^0.2.28",
     "clean-webpack-plugin": "^3.0.0",
     "jspdf": "^1.5.3",
     "lite-server": "^2.5.4",
-    "ts-loader": "^7.0.4",
-    "typescript": "^3.9.2",
+    "ts-loader": "^7.0.5",
+    "typescript": "^3.9.5",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.11.0"
