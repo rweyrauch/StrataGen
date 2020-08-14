@@ -16,6 +16,7 @@
 
 import { Card, CardType } from "./card";
 import { serialize, deserialize } from "typescript-json-serializer";
+import Jimp from 'jimp';
 
 let activeCards: Card[] = [];
 let currentCard = 0;
@@ -262,6 +263,29 @@ function onLoadCard() {
     }
 }
 
+function onBackgroundLoad(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const files = input.files;
+
+    if (files && files[0]) {
+        //Jimp.read(files[0].name);
+    }
+}
+
+function onBgOpacityChanged(event: Event) {
+    const inputElem = event.target as HTMLInputElement;
+    if (inputElem) {
+        inputElem.value;
+    }
+}
+
+function onBgSaturationChanged(event: Event) {
+    const inputElem = event.target as HTMLInputElement;
+    if (inputElem) {
+        inputElem.value;
+    }
+}
+
 function updateCardUI() {
     if (activeCards[currentCard]) {
         $('#cardtype').val(activeCards[currentCard]._type.toString());
@@ -316,6 +340,10 @@ function plumbCallbacks() {
     $('#cardvalue').on('input', onValueChanged);
     $('#createcard').click(handleCreate);
     $('#datacardfile').on('change', handleFileSelect);
+
+    $('#backgroundfile').on('change', onBackgroundLoad);
+    $('#bgopacity').on('input', onBgOpacityChanged);
+    $('#bgsaturation').on('input', onBgSaturationChanged);
 
     $('#savecard').click(onSaveCard);
     $('#loadcard').click(onLoadCard);
