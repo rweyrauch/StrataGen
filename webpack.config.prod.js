@@ -24,6 +24,5 @@ module.exports = {
         extensions: [
             '.ts', '.js'
         ],
-        fallback: { "stream": false }
     }
 };
