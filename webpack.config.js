@@ -22,10 +22,5 @@ module.exports = {
         extensions: [
             '.ts', '.js'
         ]
-    },
-    devServer: {
-        static: {
-            directory: __dirname,
-        },
     }
 };
