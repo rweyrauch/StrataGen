@@ -59,19 +59,24 @@ export function RenderParagraph(ctx: CanvasRenderingContext2D, text: string, x: 
         const heightMeasure = ctx.measureText(text);
         const th = (heightMeasure.actualBoundingBoxDescent - heightMeasure.actualBoundingBoxAscent) * 1.5;
 
-        text.split(" ").forEach(function (word) {
-            const measure: TextMetrics = ctx.measureText(word);
-            if ((length + measure.width) > w) {
+        // Split input text into multiple paragraphs using blank line as a separator.
+        text.split("\n").forEach(function (paragraph) {
+            currentLine.length = 0;
+            length = 0;
+            paragraph.split(" ").forEach(function (word) {
+                const measure: TextMetrics = ctx.measureText(word);
+                if ((length + measure.width) > w) {
+                    lines.push(currentLine.join(" "));
+                    currentLine.length = 0;
+                    length = 0;
+                }
+                length += measure.width + spaceWidth;
+                currentLine.push(word);
+            });
+            if (currentLine.length > 0) {
                 lines.push(currentLine.join(" "));
-                currentLine.length = 0;
-                length = 0;
             }
-            length += measure.width + spaceWidth;
-            currentLine.push(word);
         });
-        if (currentLine.length > 0) {
-            lines.push(currentLine.join(" "));
-        }
 
         for (let l of lines) {
             let measure = ctx.measureText(l);
