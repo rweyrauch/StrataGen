@@ -16,7 +16,7 @@
 
 import { Card, CardType } from "./card";
 import { serialize, deserialize } from "typescript-json-serializer";
-import Jimp from 'jimp';
+import { parse } from 'papaparse';
 
 let activeCards: Card[] = [];
 let currentCard = 0;
@@ -129,13 +129,10 @@ function handleCreate() {
         if (outputMargin) marginMm = parseInt(outputMargin.value);
         // Round margin up to that is always at least the requested size.
         let marginPx = Math.ceil(mmToInches(marginMm) * dpi);
-        //console.log("Margin Px" + marginPx);
 
         let canvas = document.createElement('canvas') as HTMLCanvasElement;
         canvas.width = Math.round(mmToInches(cardSizeMm[0]) * dpi) + 2 * marginPx;
         canvas.height = Math.round(mmToInches(cardSizeMm[1]) * dpi) + 2 * marginPx;
-
-        //console.log("Saved cavas size: " + canvas.width + ", " + canvas.height);
 
         activeCards[currentCard].draw(canvas, marginPx);
 
@@ -168,76 +165,51 @@ function handleFileSelect(event: Event) {
         activeCards.length = 0;
 
         // files is a FileList of File objects. List some properties.
-        let output = [];
         for (let f of files) {
-
             const fileExt = getFileExtension(f.name);
             if (fileExt === "csv" || fileExt === 'tsv') {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    // Create a list of cards, make the first card active.
-                    const re = e.target;
-                    if (re && re.result) {
-                        let sourceData = re.result;
-
-                        // Skip encoding tag
-                        const csvdatastart = sourceData.toString().indexOf(',') + 1;
-                        const csvdata = window.atob(sourceData.toString().slice(csvdatastart));
-                        const csvarray = csvdata.split(/\r?\n/g);
-
+                let config: any;
+                parse(f, {complete: (result) => {
+                    for (let data of result.data) {
+                        let fields = data as Array<string>;
                         let cardType = CardType.Stratagem;
-                        for (let c of csvarray) {
-                            const fields = c.split(fileExt === 'csv' ? ',' : '\t');
-
-                            if (fields.length > 1) {
-                                // field[0] -> type
-                                console.log("Type: " + fields[0]);
-                                if (fields[0].toUpperCase() == "STRATAGEM") cardType = CardType.Stratagem;
-                                else if (fields[0].toUpperCase() === "PSYCHIC POWER") cardType = CardType.PsychicPower;
-                                else if (fields[0].toUpperCase() === "TACTICAL OBJECTIVE") cardType = CardType.TacticalObjective;
-                                else if (fields[0].toUpperCase() === "PRAYER") cardType = CardType.Prayer;
-                                else {
-                                    // Unknown card type!
-                                    // TOOD: Improve error handling.
-                                    $('#errorText').html('Unknown card type: ' + fields[0] + '.  Supported card types are ' +
-                                        'STRATAGEM, PSYCHIC POWER, PRAYER and TACTICAL OBJECTIVE.');
-                                    $('#errorDialog').modal();
-                                }
-
-                                // TODO: parse based on card type.
-                                if (cardType == CardType.Prayer) {
-                                    if (fields.length == 5) {
-                                        let card = new Card();
-                                        card._type = cardType;
-                                        card._value = "";
-                                        card._title = fields[1];
-                                        card._heading = fields[2];
-                                        card._fluff = fields[3];
-                                        card._rule = fields[4];
-                                        activeCards.push(card);
-                                    }
-                                }
-                                else {
-                                    if (fields.length == 6) {
-                                        let card = new Card();
-                                        card._type = cardType;
-                                        card._value = fields[1];
-                                        card._title = fields[2];
-                                        card._heading = fields[3];
-                                        card._fluff = fields[4];
-                                        card._rule = fields[5];
-                                        activeCards.push(card);
-                                    }
-                                }
+                        if (fields[0].toUpperCase() == "STRATAGEM") cardType = CardType.Stratagem;
+                        else if (fields[0].toUpperCase() === "PSYCHIC POWER") cardType = CardType.PsychicPower;
+                        else if (fields[0].toUpperCase() === "TACTICAL OBJECTIVE") cardType = CardType.TacticalObjective;
+                        else if (fields[0].toUpperCase() === "PRAYER") cardType = CardType.Prayer;
+                        else {
+                            continue;
+                        }
+                        if (cardType == CardType.Prayer) {
+                            if (fields.length == 5) {
+                                let card = new Card();
+                                card._type = cardType;
+                                card._value = "";
+                                card._title = fields[1];
+                                card._heading = fields[2];
+                                card._fluff = fields[3];
+                                card._rule = fields[4];
+                                activeCards.push(card);
                             }
                         }
-                        currentCard = 0;
-                        console.log("Num active cards: " + activeCards.length);
-                        updateCardUI();
-                        updatePreview();
+                        else {
+                            if (fields.length == 6) {
+                                let card = new Card();
+                                card._type = cardType;
+                                card._value = fields[1];
+                                card._title = fields[2];
+                                card._heading = fields[3];
+                                card._fluff = fields[4];
+                                card._rule = fields[5];
+                                activeCards.push(card);
+                            }
+                        }
                     }
-                }
-                reader.readAsDataURL(f);
+                    currentCard = 0;
+                    console.log("Num active cards: " + activeCards.length);
+                    updateCardUI();
+                    updatePreview();
+                }});
             }
             else {
                 $('#errorText').html('StrataGen only supports .csv files.  Selected file is a \'' + fileExt + "\' file.");
