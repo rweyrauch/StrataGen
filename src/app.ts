@@ -1,5 +1,5 @@
 /*
-    Copyright 2020 Rick Weyrauch,
+    Copyright 2020-2022 Rick Weyrauch,
 
     Permission to use, copy, modify, and/or distribute this software for any purpose 
     with or without fee is hereby granted, provided that the above copyright notice
@@ -14,7 +14,7 @@
     OF THIS SOFTWARE.
 */
 
-import { Card, CardType } from "./card";
+import { Card, CardStyle, CardType } from "./card";
 import { serialize, deserialize } from "typescript-json-serializer";
 import { parse } from 'papaparse';
 
@@ -57,7 +57,14 @@ function onCardTypeChanged(event: Event) {
 function onCardStyleChanged(event: Event) {
     const selectElem = event.target as HTMLSelectElement;
     if (selectElem && activeCards[currentCard]) {
-        // TODO: implement style
+        if (selectElem.selectedOptions[0].text == 'Classic') {
+            activeCards[currentCard]._style = CardStyle.Classic;
+        }
+        else if (selectElem.selectedOptions[0].text == '9th Edition') {
+            activeCards[currentCard]._style = CardStyle.Edition_9th;
+        }
+        updateCardUI();
+        updatePreview();
     }
 }
 
@@ -97,6 +104,14 @@ function onValueChanged(event: Event) {
     const inputElem = event.target as HTMLInputElement;
     if (inputElem && activeCards[currentCard]) {
         activeCards[currentCard]._value = inputElem.value;
+        updatePreview();
+    }
+}
+
+function onFooterChanged(event: Event) {
+    const inputElem = event.target as HTMLInputElement;
+    if (inputElem && activeCards[currentCard]) {
+        activeCards[currentCard]._footer = inputElem.value;
         updatePreview();
     }
 }
@@ -160,6 +175,9 @@ function handleFileSelect(event: Event) {
     const input = event.target as HTMLInputElement;
     const files = input.files;
 
+    // TODO: Add card style support to loaded CSV data.
+    let currentStyle = CardStyle.Edition_9th;
+
     if (files) {
         currentCard = 0;
         activeCards.length = 0;
@@ -184,6 +202,7 @@ function handleFileSelect(event: Event) {
                             if (fields.length == 5) {
                                 let card = new Card();
                                 card._type = cardType;
+                                card._style = currentStyle;
                                 card._value = "";
                                 card._title = fields[1];
                                 card._heading = fields[2];
@@ -196,6 +215,7 @@ function handleFileSelect(event: Event) {
                             if (fields.length == 6) {
                                 let card = new Card();
                                 card._type = cardType;
+                                card._style = currentStyle;
                                 card._value = fields[1];
                                 card._title = fields[2];
                                 card._heading = fields[3];
@@ -261,10 +281,14 @@ function onBgSaturationChanged(event: Event) {
 function updateCardUI() {
     if (activeCards[currentCard]) {
         $('#cardtype').val(activeCards[currentCard]._type.toString());
+        $('#cardstyle').val(activeCards[currentCard]._style.toString());
         $('#cardheader').val(activeCards[currentCard]._heading);
         $('#cardtitle').val(activeCards[currentCard]._title);
         $('#cardrule').val(activeCards[currentCard]._rule);
         $('#cardfluff').val(activeCards[currentCard]._fluff);
+        $('#cardfooter').val(activeCards[currentCard]._footer);
+
+        $('#cardfootercontrol').hide();
 
         if (activeCards[currentCard]._type === CardType.Stratagem) {
             $('#cardvalue').attr({"min": 1, "max": 3});
@@ -283,12 +307,18 @@ function updateCardUI() {
             $('#cardvaluecontrol').show();
         }
         else if (activeCards[currentCard]._type === CardType.TacticalObjective) {
-            $('#cardvalue').attr({"min": 11, "max": 66});
-            if (parseInt(activeCards[currentCard]._value) > 66) activeCards[currentCard]._value = "66";
-            else if (parseInt(activeCards[currentCard]._value) < 11) activeCards[currentCard]._value = "11";
-            
-            $('#cardvaluelabel').html("Objective (D66)");            
-            $('#cardvaluecontrol').show();
+            if (activeCards[currentCard]._style == CardStyle.Classic) {
+                $('#cardvalue').attr({"min": 11, "max": 66});
+                if (parseInt(activeCards[currentCard]._value) > 66) activeCards[currentCard]._value = "66";
+                else if (parseInt(activeCards[currentCard]._value) < 11) activeCards[currentCard]._value = "11";
+                
+                $('#cardvaluelabel').html("Objective (D66)");
+                $('#cardvaluecontrol').show();
+            }
+            else if (activeCards[currentCard]._style == CardStyle.Edition_9th) {
+                $('#cardvaluecontrol').hide();
+                $('#cardfootercontrol').show();
+            }
         }
         else if (activeCards[currentCard]._type === CardType.Prayer) {
             $('#cardvaluecontrol').hide();
@@ -310,6 +340,8 @@ function plumbCallbacks() {
     $('#cardrule').on('input', onRuleChanged);
     $('#cardfluff').on('input', onFluffChanged);
     $('#cardvalue').on('input', onValueChanged);
+    $('#cardfooter').on('input', onFooterChanged);
+
     $('#createcard').click(handleCreate);
     $('#datacardfile').on('change', handleFileSelect);
 
@@ -336,5 +368,6 @@ if (canvas) {
 
 plumbCallbacks();
 
+updateCardUI();
 updatePreview();
 

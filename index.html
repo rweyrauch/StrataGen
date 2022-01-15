@@ -43,6 +43,14 @@
                               </div>
 
                               <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label" for="cardstyle">Style</label>
+                                    <select class="form-control col-sm-9" name="" id="cardstyle">
+                                          <option value="Classic">Classic</option>
+                                          <option value="9th Edition">9th Edition</option>
+                                    </select>
+                              </div>
+
+                              <div class="form-group row">
                                     <label class="col-sm-3 col-form-label" for="cardheader">Header</label>
                                     <input class="form-control col-sm-9" type="text" id="cardheader" placeholder=""
                                           value="Stratagem">
@@ -72,14 +80,9 @@
                                           required>
                               </div>
 
-                              <!-- Hide this controls until it is implemented -->
-                              <div class="form-group" hidden>
-                                    <label for="cardstyle">Style</label>
-                                    <select class="form-control" name="" id="cardstyle">
-                                          <option value="">Clean</option>
-                                          <option value="">Chaos</option>
-                                          <option value="">Orky</option>
-                                    </select>
+                              <div class="form-group row" id="cardfootercontrol">
+                                    <label class="col-sm-3 col-form-label" for="cardfooter">Footer</label>
+                                    <input class="form-control col-sm-9" type="text" id="cardfooter" placeholder="<Footer>" value="OBJECTIVE">
                               </div>
                         </form>
                   </div>
@@ -145,7 +148,7 @@
             </div>
 
             <footer class="my-5 pt-5 text-muted text-center text-small">
-                  <p class="mb-1">&copy; 2020 Rick Weyrauch</p>
+                  <p class="mb-1">&copy; 2020-2022 Rick Weyrauch</p>
                   <ul class="list-inline">
                         <li class="list-inline-item"><a href="about.html">About</a></li>
                         <li class="list-inline-item"><a href="help.html">Help</a></li>

@@ -1,5 +1,5 @@
 /*
-    Copyright 2020 Rick Weyrauch,
+    Copyright 2020-2022 Rick Weyrauch,
 
     Permission to use, copy, modify, and/or distribute this software for any purpose 
     with or without fee is hereby granted, provided that the above copyright notice
@@ -14,6 +14,7 @@
     OF THIS SOFTWARE.
 */
 
+import { type } from 'jquery';
 import { JsonProperty, Serializable } from 'typescript-json-serializer';
 
 export enum CardType {
@@ -21,6 +22,11 @@ export enum CardType {
     PsychicPower = 'Psychic Power',
     TacticalObjective = 'Tactical Objective',
     Prayer = 'Prayer'
+}
+
+export enum CardStyle {
+    Classic = 'Classic',
+    Edition_9th = '9th Edition'
 }
 
 export enum Justification {
@@ -107,14 +113,19 @@ export class Card {
     @JsonProperty() private _scale: number = 1;
 
     @JsonProperty() public _type: CardType = CardType.Stratagem;
+    @JsonProperty() public _style: CardStyle = CardStyle.Classic;
 
     @JsonProperty() public _heading: string = "Stratagem";
     @JsonProperty() public _title: string = "<Title>";
     @JsonProperty() public _fluff: string = "<Fluff text>";
     @JsonProperty() public _rule: string = "<Rule text>"
+    @JsonProperty() public _footer: string = "<Footer>"
     @JsonProperty() public _value: string = "1";
 
     private headerFont(): string {
+        if (this._style == CardStyle.Edition_9th) {
+            return Math.round(16*this._scale).toString() + 'px ' + 'Teko';
+        }
         return Math.round(24*this._scale).toString() + 'px ' + 'Teko';
     }
     private titleFont(): string {
@@ -130,6 +141,9 @@ export class Card {
         return Math.round(18*this._scale).toString() + 'px ' + 'Teko';
     }
     private valueFont(): string {
+        return Math.round(24*this._scale).toString() + 'px ' + 'Teko';
+    }
+    private footerFont(): string {
         return Math.round(24*this._scale).toString() + 'px ' + 'Teko';
     }
 
@@ -152,18 +166,23 @@ export class Card {
         this.roundRect(ctx, 1, 1, this._width - 2, this._height - 2, 20, false, true);
 
         const borderX = this._width * 0.05;
-        const borderY = borderX;
+        const borderY = this._height * 0.02;
         const borderWidth = this._width - 2 * borderX;
         const borderHeight = this._height - 2 * borderY;
         const borderLineWidth = Math.ceil(borderX * 0.3);
 
-        const textRegionHeight = this._height / 12;
+        let numRows = 12;
+        if (this._style  == CardStyle.Edition_9th) numRows = 20;
 
-        ctx.save();
-        ctx.strokeStyle = 'grey';
-        ctx.lineWidth = borderLineWidth;
-        this.drawBorder(ctx, borderX, borderY, borderWidth, borderHeight, textRegionHeight);
-        ctx.restore();
+        const textRegionHeight = this._height / numRows;
+
+        if (this._style == CardStyle.Classic) {
+            ctx.save();
+            ctx.strokeStyle = 'grey';
+            ctx.lineWidth = borderLineWidth;
+            this.drawBorder(ctx, borderX, borderY, borderWidth, borderHeight, textRegionHeight);
+            ctx.restore();
+        }
 
         const cardHeader = this._heading.toLocaleUpperCase();
 
@@ -194,11 +213,15 @@ export class Card {
 
         curY += textRegionHeight;
 
-        ctx.moveTo(marginXLeft, curY);
-        ctx.lineTo(marginXRight, curY);
-        ctx.stroke();
-
-        curY += borderY;
+        if (this._style == CardStyle.Classic) {
+            ctx.moveTo(marginXLeft, curY);
+            ctx.lineTo(marginXRight, curY);
+            ctx.stroke();
+            curY += borderY;
+        }
+        else {
+            curY += borderY;
+        }
 
         if (this._fluff.length > 0) {
             ctx.save();
@@ -224,44 +247,12 @@ export class Card {
         curY = this._height - borderY * 1.5 - textRegionHeight;
 
         if ((this._type == CardType.Stratagem) || (this._type == CardType.PsychicPower) || (this._type == CardType.TacticalObjective)) {
-
-            const cpBoxSize = textRegionHeight;
-            
-            ctx.save();
-            ctx.lineWidth = Math.max(Math.ceil(this._scale), 1.0);
-            this.roundRect(ctx, marginXLeft * 2 + cpBoxSize, curY, textWidth - 2 * marginXLeft - cpBoxSize, textRegionHeight - 6, 8, false, true);
-            ctx.restore();
-            
-            ctx.save();
-            ctx.font = this.footFont();
-            ctx.textBaseline = 'top';
-            ctx.fillStyle = 'black';
-        
-            let footText = 'COMMAND POINTS';
-            if (this._type === CardType.Stratagem) {
-               footText = 'COMMAND POINTS';
+            if (this._style == CardStyle.Classic) {
+                this.drawFooterClassic(ctx, marginXLeft, marginXRight, curY, textRegionHeight, textWidth);
             }
-            else if (this._type === CardType.PsychicPower) {
-                footText = 'WARP CHARGE';
+            else if (this._style == CardStyle.Edition_9th) {
+                this.drawFooter9th(ctx, marginXLeft, marginXRight, curY, textRegionHeight, textWidth);
             }
-            else if (this._type === CardType.TacticalObjective) {
-                footText = 'OBJECTIVE';
-            }
-            RenderText(ctx, footText, marginXLeft * 2 + cpBoxSize, curY, textWidth - 2 * marginXLeft - cpBoxSize, textRegionHeight - 6, Justification.Center)
-            ctx.restore();
-
-            ctx.save();
-            ctx.fillStyle = '#ba2222';
-            ctx.lineWidth = Math.max(Math.ceil(this._scale), 1.0);
-            this.bevelRect(ctx, marginXLeft * 2, curY - 3, cpBoxSize, cpBoxSize, 5, true, true);
-            ctx.restore();
-
-            ctx.save();
-            ctx.font = this.valueFont();
-            ctx.textBaseline = 'top';
-            ctx.fillStyle = '#f5f2f2';
-            RenderText(ctx, this._value, marginXLeft * 2, curY - 3, cpBoxSize, cpBoxSize, Justification.Center);
-            ctx.restore();
         }
         else if (this._type == CardType.Prayer) {
             // Nothing to do for prayers.
@@ -318,4 +309,75 @@ export class Card {
         ctx.stroke();
     }
 
+    private drawFooterClassic(ctx: CanvasRenderingContext2D, x: number, x1: number, y: number, textRegionHeight: number, textWidth: number) {
+        const cpBoxSize = textRegionHeight;
+            
+        ctx.save();
+        ctx.lineWidth = Math.max(Math.ceil(this._scale), 1.0);
+        this.roundRect(ctx, x * 2 + cpBoxSize, y, textWidth - 2 * x - cpBoxSize, textRegionHeight - 6, 8, false, true);
+        ctx.restore();
+        
+        ctx.save();
+        ctx.font = this.footFont();
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = 'black';
+    
+        let footText = 'COMMAND POINTS';
+        if (this._type === CardType.Stratagem) {
+            if (this._value == '1') {
+                footText = 'COMMAND POINT';
+            }
+        }
+        else if (this._type === CardType.PsychicPower) {
+            footText = 'WARP CHARGE';
+        }
+        else if (this._type === CardType.TacticalObjective) {
+            footText = this._footer;
+        }
+        RenderText(ctx, footText, x * 2 + cpBoxSize, y, textWidth - 2 * x - cpBoxSize, textRegionHeight - 6, Justification.Center)
+        ctx.restore();
+
+        ctx.save();
+        ctx.fillStyle = '#ba2222';
+        ctx.lineWidth = Math.max(Math.ceil(this._scale), 1.0);
+        this.bevelRect(ctx, x * 2, y - 3, cpBoxSize, cpBoxSize, 5, true, true);
+        ctx.restore();
+
+        ctx.save();
+        ctx.font = this.valueFont();
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = '#f5f2f2';
+        RenderText(ctx, this._value, x * 2, y - 3, cpBoxSize, cpBoxSize, Justification.Center);
+        ctx.restore();   
+    }
+
+    private drawFooter9th(ctx: CanvasRenderingContext2D, x0: number, x1: number, y: number, textRegionHeight: number, textWidth: number) {    
+        let footText = '';
+        if (this._type === CardType.Stratagem) {
+            footText = this._value + ' COMMAND POINT';
+            if (this._value != "1") {
+                footText += 'S';
+            } 
+        }
+        else if (this._type === CardType.PsychicPower) {
+            footText = 'WARP CHARGE ' + this._value;
+        }
+        else if (this._type === CardType.TacticalObjective) {
+            footText = this._footer;
+        }
+        if (footText.length > 0) {
+            ctx.moveTo(x0, y);
+            ctx.lineTo(x1, y);
+            ctx.stroke();
+            y += 4;
+
+            ctx.save();
+            ctx.font = this.footFont();
+            ctx.textBaseline = 'top';
+            ctx.fillStyle = 'black';
+
+            RenderText(ctx, footText, x0, y, textWidth, textRegionHeight, Justification.Center)
+            ctx.restore();
+        }
+    }
 }
