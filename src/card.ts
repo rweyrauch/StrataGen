@@ -118,13 +118,13 @@ export class Card {
         return Math.round(24*this._scale).toString() + 'px ' + 'Teko';
     }
     private titleFont(): string {
-        return Math.round(28*this._scale).toString() + 'px ' + 'Teko';
+        return Math.round(26*this._scale).toString() + 'px ' + 'Teko';
     }
     private fluffFont(): string {
-        return 'italic ' + Math.round(14*this._scale).toString() + 'px ' + 'serif';
+        return 'italic ' + Math.round(13*this._scale).toString() + 'px ' + 'serif';
     }
     private ruleFont(): string {
-        return Math.round(14*this._scale).toString() + 'px ' + 'serif';
+        return Math.round(15*this._scale).toString() + 'px ' + 'serif';
     }
     private footFont(): string {
         return Math.round(18*this._scale).toString() + 'px ' + 'Teko';
