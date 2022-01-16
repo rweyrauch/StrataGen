@@ -171,12 +171,16 @@ function getFileExtension(filename: string): string {
     return "";
 }
 
+function textToStyle(styleText: string): CardStyle {
+    if (styleText == 'CLASSIC') return CardStyle.Classic;
+    return CardStyle.Edition_9th;
+}
+
 function handleFileSelect(event: Event) {
     const input = event.target as HTMLInputElement;
     const files = input.files;
 
-    // TODO: Add card style support to loaded CSV data.
-    let currentStyle = CardStyle.Edition_9th;
+    let defaultStyle = CardStyle.Edition_9th;
 
     if (files) {
         currentCard = 0;
@@ -199,30 +203,60 @@ function handleFileSelect(event: Event) {
                             continue;
                         }
                         if (cardType == CardType.Prayer) {
+                            let i = 1;
+                            let card = new Card();
+                            card._type = cardType;
+                            card._value = "";
                             if (fields.length == 5) {
-                                let card = new Card();
-                                card._type = cardType;
-                                card._style = currentStyle;
-                                card._value = "";
-                                card._title = fields[1];
-                                card._heading = fields[2];
-                                card._fluff = fields[3];
-                                card._rule = fields[4];
-                                activeCards.push(card);
+                                card._style = defaultStyle;
                             }
+                            else if (fields.length == 6) {
+                                card._style = textToStyle(fields[i++]);
+                            }
+                            card._title = fields[i++];
+                            card._heading = fields[i++];
+                            card._fluff = fields[i++];
+                            card._rule = fields[i++];
+                            activeCards.push(card);
+                        }
+                        else if (cardType == CardType.TacticalObjective) {
+                            let i = 1;
+                            let card = new Card();
+                            card._type = cardType;
+                            if (fields.length == 5) {
+                                card._style = defaultStyle;
+                            } 
+                            else if (fields.length >= 6) {
+                                card._style = textToStyle(fields[i++]);                                
+                            }
+                            card._title = fields[i++];
+                            card._heading = fields[i++];
+                            card._fluff = fields[i++];
+                            card._rule = fields[i++];
+                            if (fields.length == 7) {
+                                card._footer = fields[i++];
+                            }
+                            else {
+                                card._footer = "OBJECTIVE";
+                            }
+                            activeCards.push(card);
                         }
                         else {
+                            let i = 1;
+                            let card = new Card();
+                            card._type = cardType;
                             if (fields.length == 6) {
-                                let card = new Card();
-                                card._type = cardType;
-                                card._style = currentStyle;
-                                card._value = fields[1];
-                                card._title = fields[2];
-                                card._heading = fields[3];
-                                card._fluff = fields[4];
-                                card._rule = fields[5];
-                                activeCards.push(card);
+                                card._style = defaultStyle;
                             }
+                            else if (fields.length == 7) {
+                                card._style = textToStyle(fields[i++]);                                
+                            }    
+                            card._value = fields[i++];
+                            card._title = fields[i++];
+                            card._heading = fields[i++];
+                            card._fluff = fields[i++];
+                            card._rule = fields[i++];
+                            activeCards.push(card);
                         }
                     }
                     currentCard = 0;

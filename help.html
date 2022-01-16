@@ -53,7 +53,7 @@
             <h2>Batch Mode</h2>
             <p>
                 StrataGen can also create a set of cards from a specially formatted text file.   This text file contains a list of
-                tab (*.tsv) or comma (*.csv) seperated fields describing the cards to be created.  StrataGen expects each line in 
+                tab (*.tsv) or comma (*.csv) separated fields describing the cards to be created.  StrataGen expects each line in 
                 file to begin with a field describing the card type to create.   The card type field must be one of the following:
                 <ul>
                     <li>STRATAGEM</li>
@@ -66,16 +66,18 @@
                     <thead>
                         <tr>
                             <th scope="col">Card Type</th>
-                            <th scope="col">Field 1</th>
+                            <th scope="col">Card Style</th>
                             <th scope="col">Field 2</th>
                             <th scope="col">Field 3</th>
                             <th scope="col">Field 4</th>
                             <th scope="col">Field 5</th>
+                            <th scope="col">Field 6</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>STRATAGEM</td>
+                            <td>CLASSIC or 9TH</td>
                             <td>Command points (number)</td>
                             <td>Stratagem name</td>
                             <td>Card header</td>
@@ -84,6 +86,7 @@
                         </tr>
                         <tr>
                             <td>PSYCHIC POWER</td>
+                            <td>CLASSIC or 9TH</td>
                             <td>Warp charge (number)</td>
                             <td>Power name</td>
                             <td>Card header</td>
@@ -92,6 +95,7 @@
                         </tr>
                         <tr>
                             <td>TACTICAL OBJECTIVE</td>
+                            <td>CLASSIC or 9TH</td>
                             <td>Id number (number)</td>
                             <td>Objective name</td>
                             <td>Card header</td>
@@ -100,6 +104,7 @@
                         </tr>
                         <tr>
                             <td>PRAYER</td>
+                            <td>CLASSIC or 9TH</td>
                             <td>Prayer name</td>
                             <td>Card header</td>
                             <td>Prayer fluff description</td>
@@ -113,9 +118,9 @@
             <h4>Example Input For Batch Mode</h4>
             <p>
                 <pre><code>
-STRATAGEM,2,Insane Bravery,Stratagem,This unit is not impressed.,Automatically pass morale for a single unit.
-PSYCHIC POWER,7,Magic Missile,Psychic Power,Bolts of energy errupt from...,Magic Missile has a warp charge of 7. The nearest unit takes D3 wounds.
-PRAYER,Mantra of Fail,Litanies of Fun,The Chaplain focuses his mind and fails.,If this litany is inspiring nothing happens.
+STRATAGEM,CLASSIC,2,Insane Bravery,Stratagem,This unit is not impressed.,Automatically pass morale for a single unit.
+PSYCHIC POWER,9TH,7,Magic Missile,Psychic Power,Bolts of energy erupt from...,Magic Missile has a warp charge of 7. The nearest unit takes D3 wounds.
+PRAYER,CLASSIC,Mantra of Fail,Litanies of Fun,The Chaplain focuses his mind and fails.,If this litany is inspiring nothing happens.
                 </code></pre>
             </p>
         </div>
