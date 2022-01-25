@@ -14,7 +14,6 @@
     OF THIS SOFTWARE.
 */
 
-import { type } from 'jquery';
 import { JsonProperty, Serializable } from 'typescript-json-serializer';
 
 export enum CardType {
@@ -33,12 +32,12 @@ export enum Justification {
     Left,
     Right,
     Center
-};
+}
 
 export function RenderText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, w: number, h: number, how: Justification): void {
     if (ctx && text.length) {
         ctx.textBaseline = 'top'; // Make the text origin at the upper-left to make positioning easier
-        let measure = ctx.measureText(text);
+        const measure = ctx.measureText(text);
         const tw = measure.width;
         const th = measure.actualBoundingBoxDescent - measure.actualBoundingBoxAscent;
 
@@ -57,8 +56,8 @@ export function RenderText(ctx: CanvasRenderingContext2D, text: string, x: numbe
 export function RenderParagraph(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, w: number, how: Justification): number {
     let curY: number = y;
     if (ctx && text.length) {
-        let lines: string[] = [];
-        let currentLine: string[] = [];
+        const lines: string[] = [];
+        const currentLine: string[] = [];
         ctx.textBaseline = 'top'; // Make the text origin at the upper-left to make positioning easier
         let length = 0;
         const spaceWidth = ctx.measureText(" ").width;
@@ -84,8 +83,8 @@ export function RenderParagraph(ctx: CanvasRenderingContext2D, text: string, x: 
             }
         });
 
-        for (let l of lines) {
-            let measure = ctx.measureText(l);
+        for (const l of lines) {
+            const measure = ctx.measureText(l);
             const tw = measure.width;
             if (how == Justification.Center) {
                 ctx.fillText(l, x + Math.max((w - tw) / 2, 0), curY, w);
@@ -110,17 +109,17 @@ export class Card {
 
     @JsonProperty() private _width: number = Card.defaultWidthPx;
     @JsonProperty() private _height: number = Card.defaultHeightPx;
-    @JsonProperty() private _scale: number = 1;
+    @JsonProperty() private _scale = 1;
 
     @JsonProperty() public _type: CardType = CardType.Stratagem;
     @JsonProperty() public _style: CardStyle = CardStyle.Classic;
 
-    @JsonProperty() public _heading: string = "Stratagem";
-    @JsonProperty() public _title: string = "<Title>";
-    @JsonProperty() public _fluff: string = "<Fluff text>";
-    @JsonProperty() public _rule: string = "<Rule text>"
-    @JsonProperty() public _footer: string = "<Footer>"
-    @JsonProperty() public _value: string = "1";
+    @JsonProperty() public _heading = "Stratagem";
+    @JsonProperty() public _title = "<Title>";
+    @JsonProperty() public _fluff = "<Fluff text>";
+    @JsonProperty() public _rule = "<Rule text>"
+    @JsonProperty() public _footer = "<Footer>"
+    @JsonProperty() public _value = "1";
 
     private headerFont(): string {
         if (this._style == CardStyle.Edition_9th) {
@@ -147,9 +146,9 @@ export class Card {
         return Math.round(24*this._scale).toString() + 'px ' + 'Teko';
     }
 
-    public draw(canvas: HTMLCanvasElement, marginPx: number) {
+    public draw(canvas: HTMLCanvasElement, marginPx: number): void {
 
-        let ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
         this._width = canvas.width - 2 * marginPx;
