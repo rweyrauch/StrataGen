@@ -13,7 +13,6 @@ module.exports = {
   output: {
     filename: 'stratagen.js',
     path: path.resolve(__dirname, 'dist'),
-    publicPath: 'dist'
   },
   module: {
     rules: [
