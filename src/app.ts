@@ -18,11 +18,11 @@ import { Card, CardStyle, CardType } from "./card";
 import { serialize, deserialize } from "typescript-json-serializer";
 import { parse } from 'papaparse';
 
-const activeCards: Card[] = [];
+let activeCards: Card[] = [];
 let currentCard = 0;
 
 function updatePreview() {
-    const canvas = document.getElementById('preview') as HTMLCanvasElement;
+    let canvas = document.getElementById('preview') as HTMLCanvasElement;
     if (canvas && activeCards[currentCard]) {
         activeCards[currentCard].draw(canvas, 0);
     }
@@ -143,15 +143,15 @@ function handleCreate() {
         const outputMargin = document.getElementById('outputmargin') as HTMLInputElement;
         if (outputMargin) marginMm = parseInt(outputMargin.value);
         // Round margin up to that is always at least the requested size.
-        const marginPx = Math.ceil(mmToInches(marginMm) * dpi);
+        let marginPx = Math.ceil(mmToInches(marginMm) * dpi);
 
-        const canvas = document.createElement('canvas') as HTMLCanvasElement;
+        let canvas = document.createElement('canvas') as HTMLCanvasElement;
         canvas.width = Math.round(mmToInches(cardSizeMm[0]) * dpi) + 2 * marginPx;
         canvas.height = Math.round(mmToInches(cardSizeMm[1]) * dpi) + 2 * marginPx;
 
         activeCards[currentCard].draw(canvas, marginPx);
 
-        const link = document.createElement('a');
+        let link = document.createElement('a');
         link.download = 'stratagem.png';
         link.href = canvas.toDataURL("image/png");
         link.click();
@@ -180,22 +180,20 @@ function handleFileSelect(event: Event) {
     const input = event.target as HTMLInputElement;
     const files = input.files;
 
-    const defaultStyle = CardStyle.Edition_9th;
+    let defaultStyle = CardStyle.Edition_9th;
 
     if (files) {
         currentCard = 0;
         activeCards.length = 0;
 
         // files is a FileList of File objects. List some properties.
-        for (let i = 0; i < files.length; i++) {
-            const f = files.item(i);
-            if (f == null) continue;
-            
+        for (let f of files) {
             const fileExt = getFileExtension(f.name);
             if (fileExt === "csv" || fileExt === 'tsv') {
+                let config: any;
                 parse(f, {complete: (result) => {
-                    for (const data of result.data) {
-                        const fields = data as Array<string>;
+                    for (let data of result.data) {
+                        let fields = data as Array<string>;
                         let cardType = CardType.Stratagem;
                         if (fields[0].toUpperCase() == "STRATAGEM") cardType = CardType.Stratagem;
                         else if (fields[0].toUpperCase() === "PSYCHIC POWER") cardType = CardType.PsychicPower;
@@ -206,7 +204,7 @@ function handleFileSelect(event: Event) {
                         }
                         if (cardType == CardType.Prayer) {
                             let i = 1;
-                            const card = new Card();
+                            let card = new Card();
                             card._type = cardType;
                             card._value = "";
                             if (fields.length == 5) {
@@ -223,7 +221,7 @@ function handleFileSelect(event: Event) {
                         }
                         else if (cardType == CardType.TacticalObjective) {
                             let i = 1;
-                            const card = new Card();
+                            let card = new Card();
                             card._type = cardType;
                             if (fields.length == 5) {
                                 card._style = defaultStyle;
@@ -245,7 +243,7 @@ function handleFileSelect(event: Event) {
                         }
                         else {
                             let i = 1;
-                            const card = new Card();
+                            let card = new Card();
                             card._type = cardType;
                             if (fields.length == 6) {
                                 card._style = defaultStyle;
@@ -268,7 +266,7 @@ function handleFileSelect(event: Event) {
                 }});
             }
             else {
-                $('#errorText').html("StrataGen only supports .csv files.  Selected file is a \"" + fileExt + "\" file.");
+                $('#errorText').html('StrataGen only supports .csv files.  Selected file is a \'' + fileExt + "\' file.");
                 $('#errorDialog').modal();
             }
         }
@@ -280,7 +278,7 @@ function onSaveCard() {
 }
 
 function onLoadCard() {
-    const lastCardString = localStorage.getItem('lastCard');
+    let lastCardString = localStorage.getItem('lastCard');
     if (lastCardString) {
         activeCards[currentCard] = deserialize<Card>(JSON.parse(lastCardString), Card);
         updateCardUI();
@@ -391,9 +389,9 @@ function plumbCallbacks() {
 
 console.log("Reloading web page.");
 
-const canvas = document.getElementById('preview') as HTMLCanvasElement;
+let canvas = document.getElementById('preview') as HTMLCanvasElement;
 if (canvas) {
-    const ctx = canvas.getContext('2d');
+    let ctx = canvas.getContext('2d');
     if (ctx) {
         if (activeCards.length == 0) {
             currentCard = 0;
