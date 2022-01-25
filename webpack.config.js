@@ -1,11 +1,26 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const { merge } = require('webpack-merge');
-const common = require('./webpack.common.js');
+const path = require('path');
 
-module.exports = merge(common, {
+module.exports = {
     mode: 'development',
-    devtool: 'source-map',
-    devServer: {
-        static: '.'
+    entry: './src/app.ts',
+    output: {
+        filename: 'stratagen.js',
+        path: path.resolve(__dirname, 'dist'),
+        publicPath: 'dist'
+    },
+    devtool: 'inline-source-map',
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                use: 'ts-loader',
+                exclude: /node_modules/
+            }
+        ]
+    },
+    resolve: {
+        extensions: [
+            '.ts', '.js'
+        ]
     }
-});
+};
