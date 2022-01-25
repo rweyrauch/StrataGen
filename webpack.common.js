@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
@@ -13,7 +12,7 @@ module.exports = {
     usedExports: true
   },
   output: {
-    filename: '[name].[contenthash].js',
+    filename: 'stratagen.js',
     path: path.resolve(__dirname, 'dist')
   },
   module: {
@@ -36,9 +35,6 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new HtmlWebpackPlugin({
-        template: './index.html'
-      }),  
     new ForkTsCheckerWebpackPlugin(),
     new ESLintPlugin({
       extensions: ['.tsx', '.ts', '.js'],

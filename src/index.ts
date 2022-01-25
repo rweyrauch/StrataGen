@@ -407,3 +407,4 @@ plumbCallbacks();
 updateCardUI();
 updatePreview();
 
+console.log("Started...");
