@@ -405,4 +405,4 @@ plumbCallbacks();
 updateCardUI();
 updatePreview();
 
-console.log("Starting up...again.");
+console.log("Starting up...");
