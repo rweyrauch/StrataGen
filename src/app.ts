@@ -17,6 +17,7 @@
 import { Card, CardStyle, CardType } from "./card";
 import { serialize, deserialize } from "typescript-json-serializer";
 import { parse } from 'papaparse';
+import $ from 'jquery';
 
 let activeCards: Card[] = [];
 let currentCard = 0;

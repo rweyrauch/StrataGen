@@ -14,7 +14,6 @@
     OF THIS SOFTWARE.
 */
 
-import { type } from 'jquery';
 import { JsonProperty, Serializable } from 'typescript-json-serializer';
 
 export enum CardType {
