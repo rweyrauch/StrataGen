@@ -5,9 +5,11 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --config webpack.config.dev.js",
-    "buildprod": "webpack --config webpack.config.prod.js",
-    "build": "webpack --config webpack.config.dev.js"
+    "dev": "vite",
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
   },
   "author": "Rick Weyrauch",
   "license": "ISC",
@@ -19,13 +21,8 @@
   },
   "devDependencies": {
     "@types/papaparse": "^5.3.1",
-    "clean-webpack-plugin": "^4.0.0",
-    "fork-ts-checker-webpack-plugin": "^6.5.0",
-    "ts-loader": "^7.0.5",
-    "typescript": "^3.9.7",
-    "webpack": "^5.94.0",
-    "webpack-cli": "^6.0.1",
-    "webpack-dev-server": "^5.2.1",
-    "webpack-merge": "^5.8.0"
+    "@vitejs/plugin-legacy": "^7.2.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
   }
 }

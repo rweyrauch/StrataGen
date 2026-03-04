@@ -17,8 +17,8 @@ See the help.html file for details on actually using the application.
 
 ### Quick Start
 
-StrataGen is written in Typescript and uses npm for initialization, compiling and launching a 
-test server at http://localhost:8080.
+StrataGen is written in Typescript and uses npm for initialization, compiling and launching a
+dev server at http://localhost:5173.
 
     $ git clone https://github.com/rweyrauch/StrataGen.git
     $ cd StrataGen
@@ -27,16 +27,18 @@ test server at http://localhost:8080.
 
 ### Details
 
-StrataGen uses webpack for compilation of the Typescript into Javascript and to bundle the
-Javascript source into a single Javascript file.
+StrataGen uses Vite for compilation of the Typescript into Javascript and bundling.
 
-The application can be built in either a debug or production release.   The default is a debug build.
-To build for debugging:
+To start the development server with hot module replacement:
+
+    $ npm run dev
+
+To build for production:
 
     $ npm run build
 
-To build StrataGen for release:
+To preview the production build locally:
 
-    $ npm run buildprod
+    $ npm run preview
 
 
