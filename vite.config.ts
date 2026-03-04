@@ -3,6 +3,7 @@ import legacy from '@vitejs/plugin-legacy'
 import { resolve } from 'path'
 
 export default defineConfig({
+  base: '/StrataGen/',
   build: {
     outDir: 'dist',
     sourcemap: true,
