@@ -267,7 +267,7 @@ function handleFileSelect(event: Event) {
                 }});
             }
             else {
-                $('#errorText').html('StrataGen only supports .csv files.  Selected file is a \'' + fileExt + "\' file.");
+                $('#errorText').text('StrataGen only supports .csv files.  Selected file is a \'' + fileExt + "\' file.");
                 $('#errorDialog').modal();
             }
         }
